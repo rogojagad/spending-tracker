@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "serve": "deno run -A --check --watch src/index.ts"
+  },
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.6.2",
+    "postgres": "https://deno.land/x/postgres@v0.19.3/mod.ts",
+    "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
+    "~/": "./"
+  }
+}
