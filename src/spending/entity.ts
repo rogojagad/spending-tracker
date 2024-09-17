@@ -24,7 +24,7 @@ const getOneById = async (id: string): Promise<ISpending> => {
     return result.rows[1];
 };
 
-const createOneSpending = async (spending: ISpending) => {
+const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
     const insertResult = await runQuery<ISpending>(
         "INSERT INTO spending (amount, description) values ( $amount, $description) RETURNING *",
         { amount: spending.amount, description: spending.description },
