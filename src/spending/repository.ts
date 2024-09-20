@@ -1,5 +1,4 @@
 import sql from "~/src/postgre.ts";
-import runQuery from "~/src/postgre.ts";
 
 export interface ISpending {
   id?: string;
