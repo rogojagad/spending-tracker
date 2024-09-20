@@ -20,7 +20,7 @@ app.get("/ping", (c: Context) => {
 app.get("/spendings", async (c: Context) => {
   const spendings = await spendingRepository.getAll();
 
-  return c.json({ data: spendings });
+  return c.json({ data: spendings, meta: { count: spendings.length } });
 });
 
 app.get("/spendings/:id", async (c: Context) => {
