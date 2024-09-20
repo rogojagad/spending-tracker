@@ -1,13 +1,16 @@
 import { Context, Hono } from "@hono/hono";
-import { ZodError } from "zod";
+import { logger } from "@hono/middleware";
 import spendingRepository from "~/src/spending/repository.ts";
 import {
   CreateSpendingRequestPayload,
-  createSpendingRequestValidator,
+  createSpendingRequestSchema,
 } from "~/src/spending/schema.ts";
+import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
 
 /** HTTP Server */
 const app = new Hono();
+
+app.use(logger());
 
 /** Endpoints */
 app.get("/ping", (c: Context) => {
@@ -27,21 +30,15 @@ app.get("/spendings/:id", async (c: Context) => {
   return c.json({ data: spending });
 });
 
-app.post("/spendings", async (c: Context, next) => {
-  const body = await c.req.json();
-  try {
-    createSpendingRequestValidator.parse(body);
-  } catch (error) {
-    const thrownError = error as ZodError;
-    console.error(thrownError.issues);
-  }
+app.post(
+  "/spendings",
+  bodyValidator(createSpendingRequestSchema),
+  async (c: Context) => {
+    const requestBody = await c.req.json<CreateSpendingRequestPayload>();
+    const spending = await spendingRepository.createOneSpending(requestBody);
 
-  await next();
-}, async (c: Context) => {
-  const requestBody = await c.req.json<CreateSpendingRequestPayload>();
-  const spending = await spendingRepository.createOneSpending(requestBody);
-
-  return c.json({ data: spending });
-});
+    return c.json({ data: spending });
+  },
+);
 
 Deno.serve({ port: 8080 }, app.fetch);

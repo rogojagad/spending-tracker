@@ -1,10 +1,10 @@
 import zod from "zod";
 
-export const createSpendingRequestValidator = zod.object({
+export const createSpendingRequestSchema = zod.object({
   amount: zod.number(),
   description: zod.string(),
 }).required();
 
 export type CreateSpendingRequestPayload = zod.infer<
-  typeof createSpendingRequestValidator
+  typeof createSpendingRequestSchema
 >;

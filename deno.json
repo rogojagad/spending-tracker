@@ -3,9 +3,10 @@
     "serve": "deno run -A --check --watch src/index.ts"
   },
   "imports": {
-    "@hono/hono": "jsr:@hono/hono@^4.6.2",
-    "postgres": "https://deno.land/x/postgresjs@v3.4.4/mod.js",
+    "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
+    "@hono/middleware": "https://deno.land/x/hono@v4.3.11/middleware.ts",
     "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
+    "postgres": "https://deno.land/x/postgresjs@v3.4.4/mod.js",
     "zod": "https://deno.land/x/zod@v3.23.8/mod.ts",
     "~/": "./"
   }
