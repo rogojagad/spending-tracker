@@ -48,7 +48,7 @@ export default class TelegramBotHandler {
     });
 
     bot.on("callback_query:data", async (ctx) => {
-      if (!this.isReady()) {
+      if (this.isReady()) { // supposed to be on "unready state" when retrieving callback query data
         await ctx.answerCallbackQuery();
         await ctx.reply("Seems like you haven't inputted the spending data");
       }
