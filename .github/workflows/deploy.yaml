@@ -25,5 +25,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "rogojagadal-spending-tr-78"
-          entrypoint: "src/index.ts"
+          entrypoint: "index.ts"
           root: "."
