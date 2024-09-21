@@ -6,6 +6,13 @@ import {
   createSpendingRequestSchema,
 } from "~/src/spending/schema.ts";
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
+import TelegramBot from "~/src/bot/client.ts";
+import TelegramBotHandler from "~/src/bot/handler.ts";
+
+/** Telegram Bot Token */
+const bot = new TelegramBot(new TelegramBotHandler());
+
+bot.start();
 
 /** HTTP Server */
 const app = new Hono();
