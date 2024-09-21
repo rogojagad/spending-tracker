@@ -48,6 +48,11 @@ export default class TelegramBotHandler {
     });
 
     bot.on("callback_query:data", async (ctx) => {
+      if (!this.isReady()) {
+        await ctx.answerCallbackQuery();
+        await ctx.reply("Seems like you haven't inputted the spending data");
+      }
+
       this.categoryId = ctx.callbackQuery.data;
       console.log(this.categoryId);
 
