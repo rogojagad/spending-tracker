@@ -5,6 +5,7 @@ export interface ISpending {
   amount: number;
   description: string;
   createdAt?: Date;
+  categoryId: string;
 }
 
 const getAll = async (): Promise<ISpending[]> => {
@@ -26,8 +27,8 @@ const getOneById = async (id: string): Promise<ISpending> => {
 const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
   const insertResult = await sql<ISpending[]>`
     INSERT INTO spending 
-      (amount, description) 
-    VALUES (${spending.amount}, ${spending.description}) 
+      (amount, description, category_id) 
+    VALUES (${spending.amount}, ${spending.description}, ${spending.categoryId}) 
     RETURNING *
     
   `;

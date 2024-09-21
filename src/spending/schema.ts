@@ -3,6 +3,7 @@ import zod from "zod";
 export const createSpendingRequestSchema = zod.object({
   amount: zod.number(),
   description: zod.string(),
+  categoryId: zod.string(),
 }).required();
 
 export type CreateSpendingRequestPayload = zod.infer<

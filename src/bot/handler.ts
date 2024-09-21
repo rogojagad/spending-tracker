@@ -1,4 +1,6 @@
 import { Bot, InlineKeyboard } from "grammy";
+import categoryRepository from "~/src/category/repository.ts";
+import spendingRepository from "~/src/spending/repository.ts";
 
 export default class TelegramBotHandler {
   private amount: number;
@@ -32,12 +34,16 @@ export default class TelegramBotHandler {
     bot.hears(/^(\d+)\s+(.+)$/, async (ctx) => {
       if (!this.isReady()) await ctx.reply("Bot is unready, please wait");
 
+      const categories = await categoryRepository.getAll();
+      const buttonRow = categories.map((category) =>
+        InlineKeyboard.text(category.name, category.id)
+      );
+
       this.amount = Number(ctx.match[1]);
       this.description = ctx.match[2];
 
       await ctx.reply("Please select spending category", {
-        reply_markup: new InlineKeyboard().text("Primary").text("Secondary")
-          .text("Ternary"),
+        reply_markup: InlineKeyboard.from([buttonRow]),
       });
     });
 
@@ -45,7 +51,13 @@ export default class TelegramBotHandler {
       this.categoryId = ctx.callbackQuery.data;
       console.log(this.categoryId);
 
-      // TODO: store data
+      const spending = await spendingRepository.createOneSpending({
+        amount: this.amount,
+        description: this.description,
+        categoryId: this.categoryId,
+      });
+
+      console.log(spending);
 
       this.makeReady();
 
