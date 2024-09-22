@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "serve": "deno run -A --check --watch src/index.ts"
+    "serve": "deno run -A --check --watch --unstable src/index.ts"
   },
   "imports": {
     "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
