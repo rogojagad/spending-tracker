@@ -8,7 +8,6 @@ import {
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
 import TelegramBot from "~/src/bot/client.ts";
 import TelegramBotHandler from "~/src/bot/handler.ts";
-import cron from "~/src/cron.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -20,9 +19,6 @@ bot.start();
 
 /** Middleware */
 app.use(logger());
-
-/** Cron */
-cron.register();
 
 /** Endpoints */
 app.get("/ping", (c: Context) => {
