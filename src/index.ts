@@ -55,7 +55,7 @@ app.post(
   },
 );
 
-app.post(`/bot`, async (c: Context) => {
+app.post(`/bot/spendings`, async (c: Context) => {
   const requestBody = await c.req.json();
   console.log(requestBody);
 

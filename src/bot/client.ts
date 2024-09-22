@@ -38,7 +38,7 @@ export default class TelegramBot {
     const url = this.CONST_WEBHOOK_URL_TEMPLATE.replace(
       "<token>",
       Deno.env.get("TELEGRAM_BOT_TOKEN")!,
-    ).replace("<url>", `${appUrl}`);
+    ).replace("<url>", `${appUrl}/bot/spendings`);
 
     console.log(`Callback URL: ${url}`);
 
