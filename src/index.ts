@@ -20,7 +20,7 @@ if (Deno.env.get("TELEGRAM_BOT_MODE") !== BotMode.WEBHOOK) {
   bot.start();
 } else {
   webhookCallback(bot.getClientInstance(), "hono");
-  bot.runInWebhookMode();
+  await bot.runInWebhookMode();
 }
 
 /** Middleware */
