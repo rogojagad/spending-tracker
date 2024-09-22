@@ -51,6 +51,8 @@ export default class TelegramBotHandler {
       if (this.isReady()) { // supposed to be on "unready state" when retrieving callback query data
         await ctx.answerCallbackQuery();
         await ctx.reply("Seems like you haven't inputted the spending data");
+
+        return;
       }
 
       this.categoryId = ctx.callbackQuery.data;

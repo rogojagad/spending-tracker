@@ -8,8 +8,9 @@ import {
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
 import TelegramBot from "~/src/bot/client.ts";
 import TelegramBotHandler from "~/src/bot/handler.ts";
+import { webhookCallback } from "grammy";
 
-/** Telegram Bot Token */
+/** Telegram Bot  */
 const bot = new TelegramBot(new TelegramBotHandler());
 
 bot.start();
@@ -18,6 +19,7 @@ bot.start();
 const app = new Hono();
 
 app.use(logger());
+webhookCallback(bot.getClientInstance(), "hono");
 
 /** Endpoints */
 app.get("/ping", (c: Context) => {

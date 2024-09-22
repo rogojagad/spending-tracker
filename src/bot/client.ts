@@ -18,4 +18,8 @@ export default class TelegramBot {
   start(): void {
     this.bot.start();
   }
+
+  getClientInstance(): Bot {
+    return this.bot;
+  }
 }
