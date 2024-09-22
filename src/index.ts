@@ -6,9 +6,8 @@ import {
   createSpendingRequestSchema,
 } from "~/src/spending/schema.ts";
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
-import TelegramBot, { BotMode } from "~/src/bot/client.ts";
+import TelegramBot from "~/src/bot/client.ts";
 import TelegramBotHandler from "~/src/bot/handler.ts";
-import { webhookCallback } from "grammy";
 
 /** HTTP Server */
 const app = new Hono();
@@ -16,12 +15,7 @@ const app = new Hono();
 /** Telegram Bot  */
 const bot = new TelegramBot(new TelegramBotHandler());
 
-if (Deno.env.get("TELEGRAM_BOT_MODE") !== BotMode.WEBHOOK) {
-  bot.start();
-} else {
-  webhookCallback(bot.getClientInstance(), "hono");
-  await bot.runInWebhookMode();
-}
+bot.start();
 
 /** Middleware */
 app.use(logger());
@@ -54,12 +48,5 @@ app.post(
     return c.json({ data: spending });
   },
 );
-
-app.post(`/bot/spendings`, async (c: Context) => {
-  const requestBody = await c.req.json();
-  console.log(requestBody);
-
-  return c.status(200);
-});
 
 Deno.serve({ port: 8080 }, app.fetch);

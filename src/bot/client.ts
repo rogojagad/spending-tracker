@@ -1,11 +1,6 @@
 import { Bot } from "grammy";
 import TelegramBotHandler from "~/src/bot/handler.ts";
 
-export enum BotMode {
-  POLLING = "POLLING",
-  WEBHOOK = "WEBHOOK",
-}
-
 export default class TelegramBot {
   private bot: Bot;
   private handler: TelegramBotHandler;
@@ -29,19 +24,5 @@ export default class TelegramBot {
 
   getClientInstance(): Bot {
     return this.bot;
-  }
-
-  async runInWebhookMode(): Promise<void> {
-    const appUrl = Deno.env.get("APP_URL");
-    if (!appUrl?.length) throw new Error(`App URL env undefined`);
-
-    const url = this.CONST_WEBHOOK_URL_TEMPLATE.replace(
-      "<token>",
-      Deno.env.get("TELEGRAM_BOT_TOKEN")!,
-    ).replace("<url>", `${appUrl}/bot/spendings`);
-
-    console.log(`Callback URL: ${url}`);
-
-    await this.bot.api.setWebhook(url);
   }
 }
