@@ -14,6 +14,14 @@ const getAll = async (): Promise<ICategory[]> => {
   return result;
 };
 
-const categoryRepository = { getAll };
+const getOneById = async (id: string): Promise<ICategory> => {
+  const result = await sql<ICategory[]>`
+    SELECT * FROM category WHERE id = '${id}'
+  `;
+
+  return result[0];
+};
+
+const categoryRepository = { getAll, getOneById };
 
 export default categoryRepository;

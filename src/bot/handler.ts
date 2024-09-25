@@ -68,8 +68,12 @@ export default class TelegramBotHandler {
 
       this.makeReady();
 
+      const category = await categoryRepository.getOneById(spending.categoryId);
+
       await ctx.answerCallbackQuery();
-      await ctx.reply("Done");
+      await ctx.reply(
+        `Done adding IDR ${spending.amount} for ${spending.description} on ${category.name}`,
+      );
     });
   }
 }
