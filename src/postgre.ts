@@ -14,6 +14,6 @@ if (!DB_HOST) throw new Error("DB host unconfigured");
 
 const DB_URL = `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/postgres`;
 
-const sql = postgres(DB_URL, { max: 3 });
+const sql = postgres(DB_URL, { max: 3, transform: postgres.toCamel });
 
 export default sql;
