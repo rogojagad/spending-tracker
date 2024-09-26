@@ -16,7 +16,7 @@ const getAll = async (): Promise<ICategory[]> => {
 
 const getOneById = async (id: string): Promise<ICategory> => {
   const result = await sql<ICategory[]>`
-    SELECT * FROM category WHERE id = ${id}
+    SELECT * FROM category WHERE id=${id}
   `;
 
   return result[0];
