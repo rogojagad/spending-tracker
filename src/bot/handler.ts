@@ -65,11 +65,11 @@ export default class TelegramBotHandler {
 
       console.log(spending);
 
-      this.makeReady();
-
       console.log(spending.categoryId);
-      const category = await categoryRepository.getOneById(spending.categoryId);
+      const category = await categoryRepository.getOneById(this.categoryId);
       console.log(category);
+
+      this.makeReady();
 
       await ctx.answerCallbackQuery();
       await ctx.reply(
