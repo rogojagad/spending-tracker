@@ -1,7 +1,7 @@
 import sql from "~/src/postgre.ts";
 
 export interface ICategory {
-  id: string;
+  id?: string;
   name: string;
   priority: number;
 }

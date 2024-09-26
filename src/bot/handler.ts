@@ -56,7 +56,6 @@ export default class TelegramBotHandler {
       }
 
       this.categoryId = ctx.callbackQuery.data;
-      console.log(this.categoryId);
 
       const spending = await spendingRepository.createOneSpending({
         amount: this.amount,
@@ -68,7 +67,9 @@ export default class TelegramBotHandler {
 
       this.makeReady();
 
-      const category = await categoryRepository.getOneById(spending.categoryId);
+      const category = await categoryRepository.getOneById(this.categoryId);
+
+      console.log(category);
 
       await ctx.answerCallbackQuery();
       await ctx.reply(
