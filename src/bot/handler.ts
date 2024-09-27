@@ -6,11 +6,11 @@ import spendingRepository from "~/src/spending/repository.ts";
  * Handlers for incoming messages
  */
 export default class TelegramBotHandler {
-  private amount: number;
+  private amount: bigint;
   private description: string;
   private categoryId: string;
 
-  private CONST_NUM_READY_FLAG = -1;
+  private CONST_NUM_READY_FLAG = BigInt(-1);
   private CONST_STRING_READY_FLAG = "*";
 
   constructor() {
@@ -42,7 +42,7 @@ export default class TelegramBotHandler {
         InlineKeyboard.text(category.name, category.id)
       );
 
-      this.amount = Number(ctx.match[1]);
+      this.amount = BigInt(ctx.match[1]);
       this.description = ctx.match[2];
 
       await ctx.reply("Please select spending category", {

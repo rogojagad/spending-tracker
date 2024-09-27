@@ -1,14 +1,15 @@
 import dayjs from "dayjs";
 
 const formatDailyReport = (
-  totalSpendingPerCategoryName: Map<string, number>,
+  totalSpendingPerCategoryName: Map<string, bigint>,
 ): string => {
   const today = dayjs().format("DD MMMM YYYY");
+  console.log([...totalSpendingPerCategoryName.values()]);
   const total = [...totalSpendingPerCategoryName.values()].reduce(
     (prev, next) => {
       return prev + next;
     },
-    0,
+    0n,
   );
 
   return `
@@ -16,7 +17,7 @@ const formatDailyReport = (
   \n\nTotal: IDR ${total}
   \n\n${
     Array.from(totalSpendingPerCategoryName).map(([key, value]) => {
-      return `${key}: IDR${value}`;
+      return `${key}: IDR ${value}`;
     }).join("\n")
   }
   `;

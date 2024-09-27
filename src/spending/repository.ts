@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 export interface ISpending {
   id?: string;
-  amount: number;
+  amount: bigint;
   description: string;
   createdAt?: Date;
   categoryId: string;

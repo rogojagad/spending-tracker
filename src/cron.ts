@@ -8,7 +8,7 @@ const register = (bot: TelegramBot): void => {
   Deno.cron("Daily Report", "15 15 * * *", async () => {
     const spendings = await spendingRepository.getAllSpendingToday();
     const categories = await categoryRepository.getAll();
-    const map = new Map<string, number>();
+    const map = new Map<string, bigint>();
 
     for (const spending of spendings) {
       const category = categories.find((category) => {
@@ -17,7 +17,7 @@ const register = (bot: TelegramBot): void => {
 
       const categoryName = category!.name;
 
-      map.set(categoryName, spending.amount);
+      map.set(categoryName, BigInt(spending.amount));
     }
 
     bot.sendMessageToRecipient(messageFormatter.formatDailyReport(map));
