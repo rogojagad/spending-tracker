@@ -4,10 +4,10 @@ import messageFormatter from "~/src/bot/messageFormatter.ts";
 import TelegramBot from "~/src/bot/client.ts";
 
 const register = (bot: TelegramBot): void => {
-  Deno.cron("Daily Report", { hour: { every: 22 } }, async () => {
+  /** 22:15 PM JKT daily */
+  Deno.cron("Daily Report", "15 15 * * *", async () => {
     const spendings = await spendingRepository.getAllSpendingToday();
     const categories = await categoryRepository.getAll();
-
     const map = new Map<string, number>();
 
     for (const spending of spendings) {

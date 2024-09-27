@@ -600,5 +600,11 @@
     "https://deno.land/x/zod@v3.23.8/types.ts": "1b172c90782b1eaa837100ebb6abd726d79d6c1ec336350c8e851e0fd706bf5c",
     "https://esm.sh/ky@1.7.2": "5238ce1d59e224c5ac583a5d5a77f455d74860cbdc54f09bc170c7469983b7d5",
     "https://esm.sh/v135/ky@1.7.2/denonext/ky.mjs": "b5a85e5c12a91004096c4acf413d55cbc659139fb95455136aebcb73916ef95c"
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:dayjs@1.11.13",
+      "npm:radash@12.1.0"
+    ]
   }
 }
