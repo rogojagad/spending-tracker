@@ -13,12 +13,10 @@ const formatDailyReport = (
 
   return `
   Spending report for ${today}
-  \n\n
-  Total: IDR ${total}
-  \n\n
-  ${
+  \n\nTotal: IDR ${total}
+  \n\n${
     Array.from(totalSpendingPerCategoryName).map(([key, value]) => {
-      return `${key}: ${value}`;
+      return `${key}: IDR${value}`;
     }).join("\n")
   }
   `;

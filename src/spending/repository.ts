@@ -50,14 +50,16 @@ const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
 const getAllSpendingToday = async (): Promise<
   ITotalSpendingAmountPerCategoryId[]
 > => {
-  const today = dayjs().format("YYYY-MM-DD");
-  const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
+  const today = dayjs().startOf("day").format("YYYY-MM-DD HH:mm:ss");
+  const tomorrow = dayjs().startOf("day").add(1, "day").format(
+    "YYYY-MM-DD HH:mm:ss",
+  );
 
   const spendings = await sql<ITotalSpendingAmountPerCategoryId[]>`
-    SELECT category_id, sum(amount)
+    SELECT category_id, sum(amount) as amount
     FROM spending
-    WHERE created_at >= '${today}'
-    AND created_at < '${tomorrow}'
+    WHERE created_at >= ${today}::timestamp AT TIME ZONE 'Asia/Jakarta'
+    AND created_at < ${tomorrow}::timestamp AT TIME ZONE 'Asia/Jakarta'
     GROUP BY category_id
   `;
 
