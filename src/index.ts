@@ -8,6 +8,7 @@ import {
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
 import TelegramBot from "~/src/bot/client.ts";
 import TelegramBotHandler from "~/src/bot/handler.ts";
+import cron from "~/src/cron.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -48,5 +49,7 @@ app.post(
     return c.json({ data: spending });
   },
 );
+
+cron.register(bot);
 
 Deno.serve({ port: 8080 }, app.fetch);

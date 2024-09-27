@@ -2,6 +2,9 @@ import { Bot, InlineKeyboard } from "grammy";
 import categoryRepository from "~/src/category/repository.ts";
 import spendingRepository from "~/src/spending/repository.ts";
 
+/**
+ * Handlers for incoming messages
+ */
 export default class TelegramBotHandler {
   private amount: number;
   private description: string;
