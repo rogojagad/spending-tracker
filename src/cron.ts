@@ -5,7 +5,7 @@ import TelegramBot from "~/src/bot/client.ts";
 
 const register = (bot: TelegramBot): void => {
   /** 22:15 PM JKT daily */
-  Deno.cron("Daily Report", "15 15 * * *", async () => {
+  Deno.cron("Daily Report", "59 16 * * *", async () => {
     const spendings = await spendingRepository.getAllSpendingToday();
     const categories = await categoryRepository.getAll();
     const map = new Map<string, bigint>();
