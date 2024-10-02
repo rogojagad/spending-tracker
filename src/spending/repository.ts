@@ -9,8 +9,8 @@ export interface ISpending {
   categoryId: string;
 }
 
-export interface ITotalSpendingAmountPerCategoryId {
-  categoryId: string;
+export interface ITotalSpendingAmountByCategoryName {
+  categoryName: string;
   amount: number;
 }
 
@@ -47,35 +47,50 @@ const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
   return insertResult[0];
 };
 
-const getAllSpendingByDatetimeRangeGroupByCategoryId = async (
+const getAllSpendingByDatetimeRangeGroupByCategoryName = async (
   fromInclusive: dayjs.Dayjs,
   toExclusive: dayjs.Dayjs,
 ): Promise<
-  ITotalSpendingAmountPerCategoryId[]
+  ITotalSpendingAmountByCategoryName[]
 > => {
-  const spendings = await sql<ITotalSpendingAmountPerCategoryId[]>`
-    SELECT category_id, sum(amount) as amount
-    FROM spending
-    WHERE created_at >= ${
+  const spendings = await sql<ITotalSpendingAmountByCategoryName[]>`
+    select 
+      category.name, sum(spending.amount) as amount
+    from 
+      spending
+    join category on category.id = spending.category_id
+    where
+      spending.created_at >= ${
     fromInclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp AT TIME ZONE 'Asia/Jakarta'
-    AND created_at < ${
-    toExclusive.format(
-      "YYYY-MM-DD HH:mm:ss",
-    )
+    and
+      spending.created_at < ${
+    toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp AT TIME ZONE 'Asia/Jakarta'
-    GROUP BY category_id
+    group by 
+      category.name, category.priority
+    order by
+      category.priority asc
   `;
 
   return spendings;
 };
 
-const getAllSpendingToday = async (): Promise<
-  ITotalSpendingAmountPerCategoryId[]
+const getAllSpendingsToday = async (): Promise<
+  ITotalSpendingAmountByCategoryName[]
 > => {
-  return await getAllSpendingByDatetimeRangeGroupByCategoryId(
+  return await getAllSpendingByDatetimeRangeGroupByCategoryName(
     dayjs().startOf("day"),
     dayjs().startOf("day").add(1, "day"),
+  );
+};
+
+const getAllSpendingsThisMonth = async (): Promise<
+  ITotalSpendingAmountByCategoryName[]
+> => {
+  return await getAllSpendingByDatetimeRangeGroupByCategoryName(
+    dayjs().startOf("month").startOf("day"),
+    dayjs().startOf("month").add(1, "month").startOf("day"),
   );
 };
 
@@ -83,7 +98,8 @@ const spendingRepository = {
   createOneSpending,
   getAll,
   getOneById,
-  getAllSpendingToday,
+  getAllSpendingsToday,
+  getAllSpendingsThisMonth,
 };
 
 export default spendingRepository;

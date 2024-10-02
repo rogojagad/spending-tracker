@@ -1,13 +1,14 @@
 import dayjs from "dayjs";
+import { ITotalSpendingAmountByCategoryName } from "~/src/spending/repository.ts";
 
 const formatDailyReport = (
-  totalSpendingPerCategoryName: Map<string, bigint>,
+  totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
 ): string => {
   const today = dayjs().format("DD MMMM YYYY");
-  console.log([...totalSpendingPerCategoryName.values()]);
-  const total = [...totalSpendingPerCategoryName.values()].reduce(
+  console.log(totalSpendingPerCategoryName);
+  const total = totalSpendingPerCategoryName.reduce(
     (prev, next) => {
-      return prev + next;
+      return prev + BigInt(next.amount);
     },
     0n,
   );
@@ -16,8 +17,8 @@ const formatDailyReport = (
   Spending report for ${today}
   \n\nTotal: IDR ${total}
   \n\n${
-    Array.from(totalSpendingPerCategoryName).map(([key, value]) => {
-      return `${key}: IDR ${value}`;
+    totalSpendingPerCategoryName.map((entry) => {
+      return `${entry.categoryName}: IDR ${entry.amount}`;
     }).join("\n")
   }
   `;
