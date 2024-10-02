@@ -47,23 +47,36 @@ const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
   return insertResult[0];
 };
 
-const getAllSpendingToday = async (): Promise<
+const getAllSpendingByDatetimeRangeGroupByCategoryId = async (
+  fromInclusive: dayjs.Dayjs,
+  toExclusive: dayjs.Dayjs,
+): Promise<
   ITotalSpendingAmountPerCategoryId[]
 > => {
-  const today = dayjs().startOf("day").format("YYYY-MM-DD HH:mm:ss");
-  const tomorrow = dayjs().startOf("day").add(1, "day").format(
-    "YYYY-MM-DD HH:mm:ss",
-  );
-
   const spendings = await sql<ITotalSpendingAmountPerCategoryId[]>`
     SELECT category_id, sum(amount) as amount
     FROM spending
-    WHERE created_at >= ${today}::timestamp AT TIME ZONE 'Asia/Jakarta'
-    AND created_at < ${tomorrow}::timestamp AT TIME ZONE 'Asia/Jakarta'
+    WHERE created_at >= ${
+    fromInclusive.format("YYYY-MM-DD HH:mm:ss")
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    AND created_at < ${
+    toExclusive.format(
+      "YYYY-MM-DD HH:mm:ss",
+    )
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
     GROUP BY category_id
   `;
 
   return spendings;
+};
+
+const getAllSpendingToday = async (): Promise<
+  ITotalSpendingAmountPerCategoryId[]
+> => {
+  return await getAllSpendingByDatetimeRangeGroupByCategoryId(
+    dayjs().startOf("day"),
+    dayjs().startOf("day").add(1, "day"),
+  );
 };
 
 const spendingRepository = {
