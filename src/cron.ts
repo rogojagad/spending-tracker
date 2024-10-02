@@ -9,7 +9,7 @@ const register = (bot: TelegramBot): void => {
     const isEom = dayjs().daysInMonth() === dayjs().get("date");
 
     const todaySpendingSummary = await spendingRepository
-      .getAllSpendingsToday();
+      .getTodaySpendingSummary();
 
     await bot.sendMessageToRecipient(
       messageFormatter.formatDailyReport(todaySpendingSummary),
@@ -17,7 +17,7 @@ const register = (bot: TelegramBot): void => {
 
     if (isEom) {
       const spendingSummaryThisMonth = await spendingRepository
-        .getAllSpendingsThisMonth();
+        .getThisMonthSpendingSummary();
 
       await bot.sendMessageToRecipient(
         messageFormatter.formatMonthlyReport(spendingSummaryThisMonth),
