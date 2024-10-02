@@ -8,17 +8,21 @@ const register = (bot: TelegramBot): void => {
   Deno.cron("Daily Report", "59 16 * * *", async () => {
     const isEom = dayjs().daysInMonth() === dayjs().get("date");
 
-    if (isEom) {
-      // const spendingSummaryThisMonth = await spendingRepository
-      //   .getAllSpendingsThisMonth();
-    }
-
     const todaySpendingSummary = await spendingRepository
       .getAllSpendingsToday();
 
     await bot.sendMessageToRecipient(
       messageFormatter.formatDailyReport(todaySpendingSummary),
     );
+
+    if (isEom) {
+      const spendingSummaryThisMonth = await spendingRepository
+        .getAllSpendingsThisMonth();
+
+      await bot.sendMessageToRecipient(
+        messageFormatter.formatMonthlyReport(spendingSummaryThisMonth),
+      );
+    }
   });
 };
 
