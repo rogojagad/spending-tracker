@@ -89,7 +89,7 @@ const getAllSpendingsByDatetimeRangeSortByCategory = async (
 > => {
   const spendings = await sql<ISpendingWithCategoryName[]>`
     select
-      spending.id, spending.amount, spending.description, category.name, spending.created_at
+      spending.id, spending.amount, spending.description, category.name as category_name, spending.created_at
     from spending
     join
       category on category.id = spending.category_id
