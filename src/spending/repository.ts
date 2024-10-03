@@ -60,7 +60,7 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
 > => {
   const spendings = await sql<ITotalSpendingAmountByCategoryName[]>`
     select 
-      category.name, sum(spending.amount) as amount
+      category.name as category_name, sum(spending.amount) as amount
     from 
       spending
     join category on category.id = spending.category_id
