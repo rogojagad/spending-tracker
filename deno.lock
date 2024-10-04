@@ -805,6 +805,8 @@
   "workspace": {
     "dependencies": [
       "npm:dayjs@1.11.13",
+      "npm:google-auth-library@9.14.1",
+      "npm:google-spreadsheet@4.1.4",
       "npm:radash@12.1.0"
     ]
   }

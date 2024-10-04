@@ -125,7 +125,7 @@ const getThisMonthSpendingSummary = async (): Promise<
 > => {
   return await getSpendingSummaryByDatetimeRangeGroupByCategoryName(
     dayjs().startOf("month").startOf("day"),
-    dayjs().add(1, "month").startOf("day"),
+    dayjs().startOf("month").add(1, "month").startOf("day"),
   );
 };
 
@@ -134,7 +134,7 @@ const getAllSpendingsThisMonth = async (): Promise<
 > => {
   return await getAllSpendingsByDatetimeRangeSortByCategory(
     dayjs().startOf("month").startOf("day"),
-    dayjs().add(1, "month").startOf("day"),
+    dayjs().startOf("month").add(1, "month").startOf("day"),
   );
 };
 
