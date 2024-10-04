@@ -101,9 +101,9 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
       spending.created_at < ${
     toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp AT TIME ZONE 'Asia/Jakarta'
-  order by
-    spending.created_at asc
-    category.priority asc,
+    order by
+      category.priority asc,
+      spending.created_at asc
   `;
 
   return spendings;
