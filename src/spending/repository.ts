@@ -81,7 +81,7 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
   return spendings;
 };
 
-const getAllSpendingsByDatetimeRangeSortByCategory = async (
+const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
   fromInclusive: dayjs.Dayjs,
   toExclusive: dayjs.Dayjs,
 ): Promise<
@@ -101,8 +101,9 @@ const getAllSpendingsByDatetimeRangeSortByCategory = async (
       spending.created_at < ${
     toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp AT TIME ZONE 'Asia/Jakarta'
-  order by
-    category.priority asc
+    order by
+      category.priority asc,
+      spending.created_at asc
   `;
 
   return spendings;
@@ -125,16 +126,16 @@ const getThisMonthSpendingSummary = async (): Promise<
 > => {
   return await getSpendingSummaryByDatetimeRangeGroupByCategoryName(
     dayjs().startOf("month").startOf("day"),
-    dayjs().add(1, "month").startOf("day"),
+    dayjs().startOf("month").add(1, "month").startOf("day"),
   );
 };
 
 const getAllSpendingsThisMonth = async (): Promise<
   ISpendingWithCategoryName[]
 > => {
-  return await getAllSpendingsByDatetimeRangeSortByCategory(
+  return await getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt(
     dayjs().startOf("month").startOf("day"),
-    dayjs().add(1, "month").startOf("day"),
+    dayjs().startOf("month").add(1, "month").startOf("day"),
   );
 };
 
