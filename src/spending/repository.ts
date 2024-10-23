@@ -1,5 +1,8 @@
-import sql from "~/src/postgre.ts";
 import dayjs from "dayjs";
+import db from "~/src/postgre.ts";
+import { sql } from "kysely";
+
+export const SPENDING_TABLE = "spending";
 
 export interface ISpending {
   id?: string;
@@ -20,36 +23,31 @@ export interface ITotalSpendingAmountByCategoryName {
 }
 
 const getAll = async (): Promise<ISpending[]> => {
-  const result = await sql<ISpending[]>`
-    SELECT * FROM spending
-  `;
+  const result = await db.selectFrom(SPENDING_TABLE).selectAll().execute();
 
   return result;
 };
 
-const getOneById = async (id: string): Promise<ISpending> => {
-  const result = await sql<ISpending[]>`
-    SELECT * FROM spending WHERE id=${id}
-  `;
+const getOneById = async (id: string): Promise<ISpending | undefined> => {
+  const result = await db.selectFrom(SPENDING_TABLE).where("id", "=", id)
+    .selectAll()
+    .executeTakeFirst();
 
-  return result[0];
+  return result;
 };
 
 const createOneSpending = async (spending: ISpending): Promise<ISpending> => {
-  const insertResult = await sql<ISpending[]>`
-    INSERT INTO spending 
-      (amount, description, category_id) 
-    VALUES (${spending.amount}, ${spending.description}, ${spending.categoryId}) 
-    RETURNING *
-  `;
+  const result = await db.insertInto(SPENDING_TABLE).values(spending)
+    .returningAll()
+    .executeTakeFirst();
 
-  if (insertResult.count === 0) {
+  if (!result) {
     throw new Error(
       `Failed to insert spending | ${JSON.stringify(spending, null, 2)}`,
     );
   }
 
-  return insertResult[0];
+  return result;
 };
 
 const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
@@ -76,9 +74,9 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
       category.name, category.priority
     order by
       category.priority asc
-  `;
+  `.execute(db);
 
-  return spendings;
+  return spendings.rows[0];
 };
 
 const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
@@ -104,14 +102,16 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
     order by
       category.priority asc,
       spending.created_at asc
-  `;
+  `.execute(db);
 
-  return spendings;
+  return spendings.rows[0];
 };
 
-/***********************
+/*
+ ***********************
  * Convenience Queries *
- ***********************/
+ **********************
+ */
 const getTodaySpendingSummary = async (): Promise<
   ITotalSpendingAmountByCategoryName[]
 > => {

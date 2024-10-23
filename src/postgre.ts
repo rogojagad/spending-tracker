@@ -1,4 +1,13 @@
 import postgres from "postgres";
+import { Kysely } from "kysely";
+import { PostgresJSDialect } from "kysely-postgres-js";
+import { ISpending } from "./spending/repository.ts";
+import { ICategory } from "./category/repository.ts";
+
+interface IDatabase {
+  category: ICategory;
+  spending: ISpending;
+}
 
 const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
 
@@ -14,7 +23,7 @@ if (!DB_HOST) throw new Error("DB host unconfigured");
 
 const DB_URL = `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/postgres`;
 
-const sql = postgres(DB_URL, {
+const postgresInstance = postgres(DB_URL, {
   max: 3,
   transform: postgres.toCamel,
   types: {
@@ -22,4 +31,8 @@ const sql = postgres(DB_URL, {
   },
 });
 
-export default sql;
+const dialect = new PostgresJSDialect({ postgres: postgresInstance });
+
+const db = new Kysely<IDatabase>({ dialect });
+
+export default db;
