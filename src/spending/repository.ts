@@ -56,7 +56,7 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
 ): Promise<
   ITotalSpendingAmountByCategoryName[]
 > => {
-  const spendings = await sql<ITotalSpendingAmountByCategoryName[]>`
+  const spendings = await sql<ITotalSpendingAmountByCategoryName>`
     select 
       category.name as category_name, sum(spending.amount) as amount
     from 
@@ -76,7 +76,7 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
       category.priority asc
   `.execute(db);
 
-  return spendings.rows[0];
+  return spendings.rows;
 };
 
 const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
@@ -85,7 +85,7 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
 ): Promise<
   ISpendingWithCategoryName[]
 > => {
-  const spendings = await sql<ISpendingWithCategoryName[]>`
+  const spendings = await sql<ISpendingWithCategoryName>`
     select
       spending.id, spending.amount, spending.description, category.name as category_name, spending.created_at
     from spending
@@ -104,7 +104,7 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
       spending.created_at asc
   `.execute(db);
 
-  return spendings.rows[0];
+  return spendings.rows;
 };
 
 /*
