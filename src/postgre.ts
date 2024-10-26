@@ -1,8 +1,9 @@
 import postgres from "postgres";
 import { Kysely } from "kysely";
 import { PostgresJSDialect } from "kysely-postgres-js";
-import { ISpending } from "./spending/repository.ts";
-import { ICategory } from "./category/repository.ts";
+import { ISpending } from "~/src/spending/repository.ts";
+import { ICategory } from "~/src/category/repository.ts";
+import { CamelCasePlugin } from "kysely";
 
 interface IDatabase {
   category: ICategory;
@@ -33,6 +34,6 @@ const postgresInstance = postgres(DB_URL, {
 
 const dialect = new PostgresJSDialect({ postgres: postgresInstance });
 
-const db = new Kysely<IDatabase>({ dialect });
+const db = new Kysely<IDatabase>({ dialect, plugins: [new CamelCasePlugin()] });
 
 export default db;

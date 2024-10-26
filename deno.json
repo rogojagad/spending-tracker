@@ -1,16 +1,17 @@
 {
   "tasks": {
-    "serve": "deno run -A --check --watch --unstable src/index.ts"
+    "serve": "deno run -A --check --watch --unstable-cron src/index.ts"
   },
   "imports": {
     "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
     "@hono/middleware": "https://deno.land/x/hono@v4.3.11/middleware.ts",
+    "@deno/collection": "https://deno.land/std@0.224.0/collections/mod.ts",
     "dayjs": "npm:dayjs@1.11.13",
     "google-auth-library": "npm:google-auth-library@9.14.1",
     "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
     "kysely": "npm:kysely@0.27.4",
     "kysely-postgres-js": "npm:kysely-postgres-js@2.0.0",
-    "postgres": "https://deno.land/x/postgresjs@v3.4.4/mod.js",
+    "postgres": "npm:postgres@3.4.4",
     "spreadsheet": "npm:google-spreadsheet@4.1.4",
     "zod": "https://deno.land/x/zod@v3.23.8/mod.ts",
     "~/": "./"
