@@ -2,7 +2,7 @@ import serviceAccountAuth from "~/src/spreadsheet/auth.ts";
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "spreadsheet";
 import { ISpendingWithCategoryName } from "~/src/spending/repository.ts";
 import spreadsheetConstants from "~/src/spreadsheet/constants.ts";
-import { get, set } from "radash";
+import { mapKeys } from "@deno/collection";
 
 const sheetId = Deno.env.get("MONTHLY_REPORT_SHEET_ID");
 
@@ -46,18 +46,15 @@ const recordSpendings = async (
   await worksheet.addRows(spendings.map((spending) => {
     const { DATA_FIELD_MAP_TO_REPORT_HEADER_MAP } = spreadsheetConstants;
 
-    const keys = Object.keys(spending);
-    let mapped = {};
+    return mapKeys<any>(spending, (key) => {
+      const mappedKeyName = DATA_FIELD_MAP_TO_REPORT_HEADER_MAP.get(key);
 
-    keys.forEach((key) => {
-      const headerName = DATA_FIELD_MAP_TO_REPORT_HEADER_MAP.get(key);
+      if (!mappedKeyName?.length) {
+        throw new Error(`Spending key ${key} is unmapped`);
+      }
 
-      if (!headerName?.length) throw Error(`Data field ${key} unmapped`);
-
-      mapped = set(mapped, headerName, get(spending, key));
+      return mappedKeyName;
     });
-
-    return mapped;
   }));
 };
 

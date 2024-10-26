@@ -1,4 +1,4 @@
-import { Context, Hono } from "@hono/hono";
+import { type Context, Hono } from "@hono/hono";
 import { logger } from "@hono/middleware";
 import spendingRepository from "~/src/spending/repository.ts";
 import {
