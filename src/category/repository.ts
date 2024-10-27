@@ -9,7 +9,9 @@ export interface ICategory {
 }
 
 const getAll = async (): Promise<ICategory[]> => {
-  const result = await db.selectFrom(CATEGORY_TABLE).selectAll().execute();
+  const result = await db.selectFrom(CATEGORY_TABLE).selectAll().orderBy(
+    "priority asc",
+  ).execute();
 
   return result;
 };
@@ -17,9 +19,9 @@ const getAll = async (): Promise<ICategory[]> => {
 const getOneById = async (id: string): Promise<ICategory> => {
   const result = await db.selectFrom(CATEGORY_TABLE).where("id", "=", id)
     .selectAll()
-    .execute();
+    .executeTakeFirstOrThrow();
 
-  return result[0];
+  return result;
 };
 
 const categoryRepository = { getAll, getOneById };
