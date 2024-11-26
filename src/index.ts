@@ -74,6 +74,7 @@ app.post("/cron/today-summary", async (_: Context) => {
   try {
     const todaySpendingSummary = await spendingRepository
       .getTodaySpendingSummary();
+    console.log(todaySpendingSummary);
 
     await bot.sendMessageToRecipient(
       messageFormatter.formatDailyReport(todaySpendingSummary),
