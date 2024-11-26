@@ -11,6 +11,7 @@ import TelegramBotHandler from "~/src/bot/handler.ts";
 import cron from "~/src/cron.ts";
 import dayjs from "dayjs";
 import spreadsheetRepository from "~/src/spreadsheet/repository.ts";
+import messageFormatter from "~/src/bot/messageFormatter.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -68,6 +69,15 @@ app.post(
     return c.json({});
   },
 );
+
+app.post("/cron/today-summary", async (_: Context) => {
+  const todaySpendingSummary = await spendingRepository
+    .getTodaySpendingSummary();
+
+  await bot.sendMessageToRecipient(
+    messageFormatter.formatDailyReport(todaySpendingSummary),
+  );
+});
 
 cron.register(bot);
 
