@@ -71,12 +71,17 @@ app.post(
 );
 
 app.post("/cron/today-summary", async (_: Context) => {
-  const todaySpendingSummary = await spendingRepository
-    .getTodaySpendingSummary();
+  try {
+    const todaySpendingSummary = await spendingRepository
+      .getTodaySpendingSummary();
 
-  await bot.sendMessageToRecipient(
-    messageFormatter.formatDailyReport(todaySpendingSummary),
-  );
+    await bot.sendMessageToRecipient(
+      messageFormatter.formatDailyReport(todaySpendingSummary),
+    );
+  } catch (error) {
+    console.log(error);
+    console.log(JSON.stringify(error, null, 2));
+  }
 });
 
 cron.register(bot);
