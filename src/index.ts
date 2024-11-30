@@ -7,7 +7,6 @@ import {
 } from "~/src/spending/schema.ts";
 import { bodyValidator } from "~/src/middleware/bodyValidator.ts";
 import TelegramBot from "~/src/bot/client.ts";
-import TelegramBotHandler from "~/src/bot/handler.ts";
 import cron from "~/src/cron.ts";
 import dayjs from "dayjs";
 import spreadsheetRepository from "~/src/spreadsheet/repository.ts";
@@ -17,7 +16,7 @@ import messageFormatter from "~/src/bot/messageFormatter.ts";
 const app = new Hono();
 
 /** Telegram Bot  */
-const bot = new TelegramBot(new TelegramBotHandler());
+const bot = new TelegramBot();
 
 bot.start();
 
