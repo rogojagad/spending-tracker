@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { ITotalSpendingAmountByCategoryName } from "~/src/spending/repository.ts";
-import util from "~/src/util.ts";
 
 const formatDailyReport = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
@@ -16,10 +15,10 @@ const formatDailyReport = (
 
   return `
   Spending report for ${today}
-  \n\nTotal: ${util.formatAmountToIDR(total)}
+  \n\nTotal: ${total.toIDRString()}
   \n\n${
     totalSpendingPerCategoryName.map((entry) => {
-      return `${entry.categoryName}: ${util.formatAmountToIDR(entry.amount)}`;
+      return `${entry.categoryName}: ${total.toIDRString()}`;
     }).join("\n")
   }
   `;
@@ -39,10 +38,10 @@ const formatMonthlyReport = (
 
   return `
   Monthly spending report for ${monthInYear}
-  \n\nTotal: ${util.formatAmountToIDR(total)}
+  \n\nTotal: ${total.toIDRString()}
   \n\n${
     totalSpendingPerCategoryName.map((entry) => {
-      return `${entry.categoryName}: ${util.formatAmountToIDR(entry.amount)}`;
+      return `${entry.categoryName}: ${total.toIDRString()}`;
     }).join("\n")
   }
   `;

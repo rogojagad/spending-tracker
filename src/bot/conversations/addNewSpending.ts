@@ -2,7 +2,6 @@ import { InlineKeyboard } from "grammy";
 import { MyContext, MyConversation } from "~/src/bot/client.ts";
 import categoryRepository from "~/src/category/repository.ts";
 import spendingRepository from "~/src/spending/repository.ts";
-import util from "~/src/util.ts";
 
 /**
  * Triggered when user send `{amount} {description}` e.g. `1000000 electricity bill`
@@ -52,9 +51,7 @@ export async function addNewSpending(
 
   await callbackQuery.answerCallbackQuery();
   await callbackQuery.reply(
-    `Done adding ${
-      util.formatAmountToIDR(spending.amount)
-    } for ${spending.description} on ${category.name}`,
+    `Done adding ${spending.amount.toIDRString()} for ${spending.description} on ${category.name}`,
   );
 
   return;
