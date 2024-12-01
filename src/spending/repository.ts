@@ -6,7 +6,7 @@ export const SPENDING_TABLE = "spending";
 
 export interface ISpending {
   id?: string;
-  amount: bigint;
+  amount: number;
   description: string;
   createdAt?: Date;
   categoryId: string;

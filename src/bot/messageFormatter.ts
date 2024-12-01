@@ -8,9 +8,9 @@ const formatDailyReport = (
   console.log(totalSpendingPerCategoryName);
   const total = totalSpendingPerCategoryName.reduce(
     (prev, next) => {
-      return prev + BigInt(next.amount);
+      return prev + next.amount;
     },
-    0n,
+    0,
   );
 
   return `
@@ -18,7 +18,7 @@ const formatDailyReport = (
   \n\nTotal: ${total.toIDRString()}
   \n\n${
     totalSpendingPerCategoryName.map((entry) => {
-      return `${entry.categoryName}: ${total.toIDRString()}`;
+      return `${entry.categoryName}: ${entry.amount.toIDRString()}`;
     }).join("\n")
   }
   `;
@@ -31,9 +31,9 @@ const formatMonthlyReport = (
 
   const total = totalSpendingPerCategoryName.reduce(
     (prev, next) => {
-      return prev + BigInt(next.amount);
+      return prev + next.amount;
     },
-    0n,
+    0,
   );
 
   return `
@@ -41,7 +41,7 @@ const formatMonthlyReport = (
   \n\nTotal: ${total.toIDRString()}
   \n\n${
     totalSpendingPerCategoryName.map((entry) => {
-      return `${entry.categoryName}: ${total.toIDRString()}`;
+      return `${entry.categoryName}: ${entry.amount.toIDRString()}`;
     }).join("\n")
   }
   `;

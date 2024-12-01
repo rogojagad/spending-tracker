@@ -28,7 +28,16 @@ const postgresInstance = postgres(DB_URL, {
   max: 3,
   transform: postgres.toCamel,
   types: {
-    bigint: postgres.BigInt,
+    numeric: {
+      from: [1700],
+      parse: function (val: string) {
+        return parseFloat(val);
+      },
+      to: 1700,
+      serialize: function (value: any): unknown {
+        return (value as number).toString();
+      },
+    },
   },
 });
 

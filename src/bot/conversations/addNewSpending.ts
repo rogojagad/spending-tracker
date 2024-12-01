@@ -3,6 +3,8 @@ import { MyContext, MyConversation } from "~/src/bot/client.ts";
 import categoryRepository from "~/src/category/repository.ts";
 import spendingRepository from "~/src/spending/repository.ts";
 
+import "../../types/extensions/number.ts";
+
 /**
  * Triggered when user send `{amount} {description}` e.g. `1000000 electricity bill`
  *
@@ -26,7 +28,7 @@ export async function addNewSpending(
 ): Promise<unknown> {
   if (!ctx.match) throw new Error("Unexpected error");
 
-  const amount = BigInt(ctx.match[1]);
+  const amount = Number(ctx.match[1]);
   const description = ctx.match[2];
 
   const categories = await categoryRepository.getAll();
@@ -51,7 +53,7 @@ export async function addNewSpending(
 
   await callbackQuery.answerCallbackQuery();
   await callbackQuery.reply(
-    `Done adding ${spending.amount.toIDRString()} for ${spending.description} on ${category.name}`,
+    `Done adding ${amount.toIDRString()} for ${spending.description} on ${category.name}`,
   );
 
   return;
