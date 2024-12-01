@@ -26,7 +26,7 @@ const register = (bot: TelegramBot): void => {
       const thisMonthSpendings = await spendingRepository
         .getAllSpendingsThisMonth();
 
-      const sheetTitle = dayjs().format("DD-MMMM-YYYY");
+      const sheetTitle = dayjs().format("MMMM-YYYY");
       await spreadsheetRepository.createNewSheet(sheetTitle);
       await spreadsheetRepository.recordSpendings(
         sheetTitle,
