@@ -7,6 +7,7 @@ import {
   createConversation,
 } from "grammy/conversations";
 import { addNewSpending } from "~/src/bot/conversations/addNewSpending.ts";
+import { generateDailyReport } from "~/src/bot/conversations/generateDailyReport.ts";
 
 export type MyContext = Context & ConversationFlavor;
 export type MyConversation = Conversation<Context>;
@@ -77,6 +78,7 @@ export default class TelegramBot {
 class ConversationHandlerRegistrar {
   register(clientInstance: BotClient): void {
     this.registerAddNewSpendings(clientInstance);
+    this.getTodaySummary(clientInstance);
     // add other conversation handler
   }
 
@@ -87,6 +89,16 @@ class ConversationHandlerRegistrar {
 
     clientInstance.hears(/^(\d+)\s+(.+)$/, async (ctx) => {
       await ctx.conversation.enter("addNewSpending");
+    });
+  }
+
+  private getTodaySummary(clientInstance: BotClient) {
+    clientInstance.use(
+      createConversation(generateDailyReport as ConversationFn<Context>),
+    );
+
+    clientInstance.hears("Daily report", async (ctx) => {
+      await ctx.conversation.enter("generateDailyReport");
     });
   }
 }
