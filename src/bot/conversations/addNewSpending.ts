@@ -1,9 +1,10 @@
 import { InlineKeyboard } from "grammy";
 import { MyContext, MyConversation } from "~/src/bot/client.ts";
-import categoryRepository from "~/src/category/repository.ts";
+import categoryRepository, { ICategory } from "~/src/category/repository.ts";
 import spendingRepository from "~/src/spending/repository.ts";
 
 import "../../types/extensions/number.ts";
+import sourceCategory, { ISource } from "~/src/source/repository.ts";
 
 /**
  * Triggered when user send `{amount} {description}` e.g. `1000000 electricity bill`
@@ -32,29 +33,67 @@ export async function addNewSpending(
   const description = ctx.match[2];
 
   const categories = await categoryRepository.getAll();
-  const buttonRow = categories.map((category) =>
-    InlineKeyboard.text(category.name, category.id)
-  );
+  const sources = await sourceCategory.getAll();
 
-  await ctx.reply("Please select spending category", {
-    reply_markup: InlineKeyboard.from([buttonRow]),
-  });
-
-  const callbackQuery = await conversation.waitFor("callback_query:data");
-  const categoryId = callbackQuery.callbackQuery.data;
+  const categoryId = await getSpendingCategory(categories, ctx, conversation);
+  const sourceId = await getSpendingSource(sources, ctx, conversation);
 
   const spending = await spendingRepository.createOneSpending({
     amount,
     description,
     categoryId,
+    sourceId,
   });
 
-  const category = await categoryRepository.getOneById(spending.categoryId);
+  const category = categories.find(({ id }) => id === categoryId);
+  const source = sources.find(({ id }) => id === sourceId);
 
-  await callbackQuery.answerCallbackQuery();
-  await callbackQuery.reply(
-    `Done adding ${amount.toIDRString()} for ${spending.description} on ${category.name}`,
+  await ctx.reply(
+    `Done adding ${amount.toIDRString()} for ${spending.description} on ${
+      category!.name
+    } from ${source!.name}`,
   );
 
   return;
+}
+
+async function getSpendingCategory(
+  categories: ICategory[],
+  ctx: MyContext,
+  conversation: MyConversation,
+): Promise<string> {
+  const categoriesButtonRow = categories.map((category) =>
+    InlineKeyboard.text(category.name, category.id)
+  );
+
+  await ctx.reply("Please select spending category", {
+    reply_markup: InlineKeyboard.from([categoriesButtonRow]),
+  });
+
+  const categoryCallbackQuery = await conversation.waitFor(
+    "callback_query:data",
+  );
+  await categoryCallbackQuery.answerCallbackQuery();
+  return categoryCallbackQuery.callbackQuery.data;
+}
+
+async function getSpendingSource(
+  sources: ISource[],
+  ctx: MyContext,
+  conversation: MyConversation,
+): Promise<string> {
+  const inlineKeyboard = new InlineKeyboard();
+
+  sources.forEach((source) => {
+    inlineKeyboard.text(source.name, source.id).row();
+  });
+
+  await ctx.reply("Please select spending source", {
+    reply_markup: inlineKeyboard,
+  });
+  const sourceCallbackQuery = await conversation.waitFor(
+    "callback_query:data",
+  );
+  await sourceCallbackQuery.answerCallbackQuery();
+  return sourceCallbackQuery.callbackQuery.data;
 }
