@@ -1,8 +1,9 @@
 {
   "tasks": {
-    "migrate:create": "db-migrate create",
     "install": "deno install --allow-import",
-    "serve": "deno run -A --check --watch --unstable-cron src/index.ts"
+    "migrate:up": "deno run -A --unstable https://deno.land/x/nessie@2.0.11/cli.ts migrate",
+    "serve": "deno run -A --check --watch --unstable-cron src/index.ts",
+    "start": "deno task migrate:up && deno task serve"
   },
   "imports": {
     "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",

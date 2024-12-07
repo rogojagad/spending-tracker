@@ -23,3 +23,20 @@ Personal Telegram Bot to track daily expenses.
 - Run `deno install` to install dependencies
 - Set required env vars as listed on `.env.example`
 - Run `deno task serve` to run
+
+## DB Migration
+
+To create new migration file, run following.
+
+It is troublesome to use CLI to create migrations. Because I can't make
+convenient Deno task accepting user params at the moment. Note for improvement.
+
+```bash
+deno run -A https://deno.land/x/nessie@2.0.11/mod.ts make {your migration file name in snake-case and all lowercase}
+```
+
+To execute migration, execute
+
+```bash
+deno task migrate
+```
