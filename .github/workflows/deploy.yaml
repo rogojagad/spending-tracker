@@ -21,6 +21,9 @@ jobs:
         with:
           deno-version: v2.1
 
+      - name: Run DB Migration
+        run: deno task migrate:up
+
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
