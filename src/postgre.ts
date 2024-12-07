@@ -4,10 +4,12 @@ import { PostgresJSDialect } from "kysely-postgres-js";
 import { ISpending } from "~/src/spending/repository.ts";
 import { ICategory } from "~/src/category/repository.ts";
 import { CamelCasePlugin } from "kysely";
+import { ISource } from "~/src/source/repository.ts";
 
 interface IDatabase {
   category: ICategory;
   spending: ISpending;
+  source: ISource;
 }
 
 const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
