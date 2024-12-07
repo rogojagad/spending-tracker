@@ -23,7 +23,7 @@ jobs:
 
       - name: Run DB Migration
         run: deno task migrate:up
-        secrets:
+        env:
           POSTGRESQL_PASSWORD: ${{secrets.POSTGRESQL_PASSWORD}}
           POSTGRESQL_USERNAME: ${{secrets.POSTGRESQL_USERNAME}}
           POSTGRESQL_HOST: ${{secrets.POSTGRESQL_HOST}}
