@@ -24,7 +24,7 @@ if (!DB_HOST) throw new Error("DB host unconfigured");
 
 const DB_URL = `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/postgres`;
 
-const postgresInstance = postgres(DB_URL, {
+export const postgresInstance = postgres(DB_URL, {
   max: 3,
   transform: postgres.toCamel,
   types: {
