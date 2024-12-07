@@ -9,11 +9,11 @@ export interface ICategory {
 }
 
 const getAll = async (): Promise<ICategory[]> => {
-  const result = await db.selectFrom(CATEGORY_TABLE).selectAll().orderBy(
+  const results = await db.selectFrom(CATEGORY_TABLE).selectAll().orderBy(
     "priority asc",
   ).execute();
 
-  return result;
+  return results;
 };
 
 const getOneById = async (id: string): Promise<ICategory> => {

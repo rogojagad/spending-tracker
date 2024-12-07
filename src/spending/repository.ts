@@ -10,6 +10,7 @@ export interface ISpending {
   description: string;
   createdAt?: Date;
   categoryId: string;
+  sourceId: string;
 }
 
 export interface ISpendingWithCategoryName

@@ -1,6 +1,9 @@
 {
   "tasks": {
-    "serve": "deno run -A --check --watch --unstable-cron src/index.ts"
+    "install": "deno install --allow-import",
+    "migrate:up": "deno run -A --unstable https://deno.land/x/nessie/cli.ts migrate",
+    "serve": "deno run -A --check --watch --unstable-cron src/index.ts",
+    "start": "deno task migrate:up && deno task serve"
   },
   "imports": {
     "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
@@ -12,6 +15,7 @@
     "grammy/conversations": "https://deno.land/x/grammy_conversations@v1.2.0/mod.ts",
     "kysely": "npm:kysely@0.27.4",
     "kysely-postgres-js": "npm:kysely-postgres-js@2.0.0",
+    "nessie": "https://deno.land/x/nessie@2.0.11/mod.ts",
     "postgres": "npm:postgres@3.4.4",
     "spreadsheet": "npm:google-spreadsheet@4.1.4",
     "zod": "https://deno.land/x/zod@v3.23.8/mod.ts",
