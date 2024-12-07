@@ -33,6 +33,9 @@ convenient Deno task accepting user params at the moment. Note for improvement.
 
 ```bash
 deno run -A https://deno.land/x/nessie@2.0.11/mod.ts make {your migration file name in snake-case and all lowercase}
+
+example:
+deno run -A https://deno.land/x/nessie@2.0.11/mod.ts make create_foo_table
 ```
 
 To execute migration, execute
