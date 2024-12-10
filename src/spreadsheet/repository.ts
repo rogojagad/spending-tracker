@@ -1,6 +1,6 @@
 import serviceAccountAuth from "~/src/spreadsheet/auth.ts";
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "spreadsheet";
-import { ISpendingWithCategoryName } from "~/src/spending/repository.ts";
+import { ISpendingWithCategoryNameAndSourceName } from "~/src/spending/repository.ts";
 import spreadsheetConstants from "~/src/spreadsheet/constants.ts";
 import { mapKeys } from "@deno/collection";
 
@@ -37,7 +37,7 @@ const createNewSheet = async (
 
 const recordSpendings = async (
   title: string,
-  spendings: ISpendingWithCategoryName[],
+  spendings: ISpendingWithCategoryNameAndSourceName[],
 ): Promise<void> => {
   const worksheet = await getExistingWorksheetByTitle(title);
 

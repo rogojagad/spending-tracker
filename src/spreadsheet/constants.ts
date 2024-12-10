@@ -3,7 +3,8 @@ const spreadsheetConstants = {
     ["description", "Description"],
     ["amount", "Amount"],
     ["categoryName", "Category"],
-    ["createdAt", "Spend At"],
+    ["sourceName", "Source"],
+    ["createdAt", "Spent At"],
     ["id", "ID"],
   ]),
 };
