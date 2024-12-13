@@ -13,9 +13,10 @@ export interface ISpending {
   sourceId: string;
 }
 
-export interface ISpendingWithCategoryName
+export interface ISpendingWithCategoryNameAndSourceName
   extends Omit<ISpending, "categoryId"> {
   categoryName: string;
+  sourceName: string;
 }
 
 export interface ITotalSpendingAmountByCategoryName {
@@ -84,14 +85,16 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
   fromInclusive: dayjs.Dayjs,
   toExclusive: dayjs.Dayjs,
 ): Promise<
-  ISpendingWithCategoryName[]
+  ISpendingWithCategoryNameAndSourceName[]
 > => {
-  const spendings = await sql<ISpendingWithCategoryName>`
+  const spendings = await sql<ISpendingWithCategoryNameAndSourceName>`
     select
-      spending.id, spending.amount, spending.description, category.name as category_name, spending.created_at
+      spending.id, spending.amount, spending.description, category.name as category_name, source.name as source_name, spending.created_at
     from spending
     join
       category on category.id = spending.category_id
+    join
+      source on source.id = spending.source_id
     where
       spending.created_at >= ${
     fromInclusive.format("YYYY-MM-DD HH:mm:ss")
@@ -132,7 +135,7 @@ const getThisMonthSpendingSummary = async (): Promise<
 };
 
 const getAllSpendingsThisMonth = async (): Promise<
-  ISpendingWithCategoryName[]
+  ISpendingWithCategoryNameAndSourceName[]
 > => {
   return await getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt(
     dayjs().startOf("month").startOf("day"),
