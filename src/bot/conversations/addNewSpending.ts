@@ -33,7 +33,7 @@ export async function addNewSpending(
   const description = ctx.match[2];
 
   const categories = await categoryRepository.getAll();
-  const sources = await sourceCategory.getAll();
+  const sources = await sourceCategory.getAllActive();
 
   const categoryId = await getSpendingCategory(categories, ctx, conversation);
   const sourceId = await getSpendingSource(sources, ctx, conversation);

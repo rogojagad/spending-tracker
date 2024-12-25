@@ -32,14 +32,14 @@ It is troublesome to use CLI to create migrations. Because I can't make
 convenient Deno task accepting user params at the moment. Note for improvement.
 
 ```bash
-deno run -A --unstable https://deno.land/x/nessie/cli.ts make {your migration file name in snake-case and all lowercase}
+deno run -A https://deno.land/x/nessie/cli.ts make {your migration file name in snake-case and all lowercase}
 
 example:
-deno run -A --unstable https://deno.land/x/nessie/cli.ts make create_foo_table
+deno run -A https://deno.land/x/nessie/cli.ts make create_foo_table
 ```
 
 To execute migration, execute
 
 ```bash
-deno task migrate
+deno task migrate:up
 ```
