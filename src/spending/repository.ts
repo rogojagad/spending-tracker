@@ -170,7 +170,7 @@ const getTodayCreditCardTransactionToSettle = async (): Promise<
   number | undefined
 > => {
   return await getSpendingAmountWithSourceNameLikeByDatetimeRange(
-    "Credit Card", // <-- actually not clean to hardcode like this. keeping it for simplicity's sake. if there is more spending source need a settlement behavior, let's rework this.
+    "Credit Card", // <-- actually not clean to hardcode like this. keeping it for simplicity's sake. if there are more spending sources need a settlement behavior, let's rework this.
     dayjs().startOf("day"),
     dayjs().startOf("day").add(1, "day"),
   );
