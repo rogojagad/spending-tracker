@@ -47,6 +47,16 @@ const formatMonthlyReport = (
   `;
 };
 
-const messageFormatter = { formatDailyReport, formatMonthlyReport };
+const formatCreditCardDailySettlementReport = (amount: number): string => {
+  return `
+    You spent ${amount.toIDRString()} on credit card today.\n\nDon't forget to transfer the fund to your appropriate credit card payment account.
+  `;
+};
+
+const messageFormatter = {
+  formatDailyReport,
+  formatMonthlyReport,
+  formatCreditCardDailySettlementReport,
+};
 
 export default messageFormatter;

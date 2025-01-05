@@ -111,6 +111,29 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
   return spendings.rows;
 };
 
+const getSpendingAmountWithSourceNameLikeByDatetimeRange = async (
+  sourceName: string,
+  fromInclusive: dayjs.Dayjs,
+  toExclusive: dayjs.Dayjs,
+): Promise<number | undefined> => {
+  const amount = await sql<{ amount: number }>`
+    select sum(spending.amount) as amount
+    from spending
+    join source on source.id = spending.source_id
+    where source.name like ${"%" + sourceName}
+    and
+      spending.created_at >= ${
+    fromInclusive.format("YYYY-MM-DD HH:mm:ss")
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    and
+      spending.created_at < ${
+    toExclusive.format("YYYY-MM-DD HH:mm:ss")
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  `.execute(db);
+
+  return amount.rows.pop()?.amount;
+};
+
 /*
  ***********************
  * Convenience Queries *
@@ -143,6 +166,16 @@ const getAllSpendingsThisMonth = async (): Promise<
   );
 };
 
+const getTodayCreditCardTransactionToSettle = async (): Promise<
+  number | undefined
+> => {
+  return await getSpendingAmountWithSourceNameLikeByDatetimeRange(
+    "Credit Card", // <-- actually not clean to hardcode like this. keeping it for simplicity's sake. if there are more spending sources need a settlement behavior, let's rework this.
+    dayjs().startOf("day"),
+    dayjs().startOf("day").add(1, "day"),
+  );
+};
+
 const spendingRepository = {
   createOneSpending,
   getAll,
@@ -150,6 +183,7 @@ const spendingRepository = {
   getTodaySpendingSummary,
   getThisMonthSpendingSummary,
   getAllSpendingsThisMonth,
+  getTodayCreditCardTransactionToSettle,
 };
 
 export default spendingRepository;
