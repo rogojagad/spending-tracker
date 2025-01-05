@@ -14,6 +14,17 @@ const register = (bot: TelegramBot): void => {
       messageFormatter.formatDailyReport(todaySpendingSummary),
     );
 
+    const creditCardTransactionAmountToSettle = await spendingRepository
+      .getTodayCreditCardTransactionToSettle();
+
+    if (creditCardTransactionAmountToSettle) {
+      await bot.sendMessageToRecipient(
+        messageFormatter.formatCreditCardDailySettlementReport(
+          creditCardTransactionAmountToSettle,
+        ),
+      );
+    }
+
     const isEom = dayjs().daysInMonth() === dayjs().get("date");
     if (isEom) {
       const spendingSummaryThisMonth = await spendingRepository
