@@ -111,7 +111,7 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
   return spendings.rows;
 };
 
-const getSpendingAmountWithSourceNameLikeByDatetimeRange = async (
+const getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange = async (
   sourceName: string,
   fromInclusive: dayjs.Dayjs,
   toExclusive: dayjs.Dayjs,
@@ -169,7 +169,7 @@ const getAllSpendingsThisMonth = async (): Promise<
 const getTodayCreditCardTransactionToSettle = async (): Promise<
   number | undefined
 > => {
-  return await getSpendingAmountWithSourceNameLikeByDatetimeRange(
+  return await getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange(
     "Credit Card", // <-- actually not clean to hardcode like this. keeping it for simplicity's sake. if there are more spending sources need a settlement behavior, let's rework this.
     dayjs().startOf("day"),
     dayjs().startOf("day").add(1, "day"),
