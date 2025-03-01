@@ -134,6 +134,37 @@ const getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange = async (
   return amount.rows.pop()?.amount;
 };
 
+const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
+  async (
+    sourceName: string,
+    fromInclusive: dayjs.Dayjs,
+    toExclusive: dayjs.Dayjs,
+  ): Promise<ITotalSpendingAmountByCategoryName[]> => {
+    const spendings = await sql<ITotalSpendingAmountByCategoryName>`
+    select 
+      category.name as category_name, sum(spending.amount) as amount
+    from 
+      spending
+    join category on category.id = spending.category_id
+    where
+      source.name like ${"%" + sourceName}
+    and
+      spending.created_at >= ${
+      fromInclusive.format("YYYY-MM-DD HH:mm:ss")
+    }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    and
+      spending.created_at < ${
+      toExclusive.format("YYYY-MM-DD HH:mm:ss")
+    }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    group by 
+      category.name, category.priority
+    order by
+      category.priority asc
+  `.execute(db);
+
+    return spendings.rows;
+  };
+
 /*
  ***********************
  * Convenience Queries *
@@ -176,6 +207,16 @@ const getTodayCreditCardTransactionToSettle = async (): Promise<
   );
 };
 
+const getTodayCreditCardSpendingAmountPerCategory = async (): Promise<
+  ITotalSpendingAmountByCategoryName[]
+> => {
+  return await getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange(
+    "Credit Card",
+    dayjs().startOf("day"),
+    dayjs().startOf("day").add(1, "day"),
+  );
+};
+
 const spendingRepository = {
   createOneSpending,
   getAll,
@@ -184,6 +225,7 @@ const spendingRepository = {
   getThisMonthSpendingSummary,
   getAllSpendingsThisMonth,
   getTodayCreditCardTransactionToSettle,
+  getTodayCreditCardSpendingAmountPerCategory,
 };
 
 export default spendingRepository;

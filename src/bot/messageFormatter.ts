@@ -1,6 +1,14 @@
 import dayjs from "dayjs";
 import { ITotalSpendingAmountByCategoryName } from "~/src/spending/repository.ts";
 
+const formatCategorySpendingBreakdown = (
+  totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
+): string => {
+  return totalSpendingPerCategoryName.map((entry) => {
+    return `${entry.categoryName}: ${entry.amount.toIDRString()}`;
+  }).join("\n");
+};
+
 const formatDailyReport = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
 ): string => {
@@ -16,11 +24,7 @@ const formatDailyReport = (
   return `
   Spending report for ${today}
   \n\nTotal: ${total.toIDRString()}
-  \n\n${
-    totalSpendingPerCategoryName.map((entry) => {
-      return `${entry.categoryName}: ${entry.amount.toIDRString()}`;
-    }).join("\n")
-  }
+  \n\n${formatCategorySpendingBreakdown(totalSpendingPerCategoryName)}
   `;
 };
 
@@ -47,9 +51,21 @@ const formatMonthlyReport = (
   `;
 };
 
-const formatCreditCardDailySettlementReport = (amount: number): string => {
+const formatCreditCardDailySettlementReport = (
+  creditCardSpendingAmountPerCategory: ITotalSpendingAmountByCategoryName[],
+): string => {
+  const totalCreditCardSpendingAmount = creditCardSpendingAmountPerCategory
+    .reduce((prev, current) => {
+      return current.amount + prev;
+    }, 0);
+
   return `
-    You spent ${amount.toIDRString()} on credit card today.\n\nDon't forget to transfer the fund to your appropriate credit card payment account.
+    You spent ${totalCreditCardSpendingAmount.toIDRString()} on credit card today.
+    \n\n
+    Details:
+    ${formatCategorySpendingBreakdown(creditCardSpendingAmountPerCategory)}
+    \n\n
+    Don't forget to transfer the fund to your appropriate credit card payment account.
   `;
 };
 

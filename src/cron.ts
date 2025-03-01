@@ -14,13 +14,13 @@ const register = (bot: TelegramBot): void => {
       messageFormatter.formatDailyReport(todaySpendingSummary),
     );
 
-    const creditCardTransactionAmountToSettle = await spendingRepository
-      .getTodayCreditCardTransactionToSettle();
+    const creditCardSpendingAmountPerCategory = await spendingRepository
+      .getTodayCreditCardSpendingAmountPerCategory();
 
-    if (creditCardTransactionAmountToSettle) {
+    if (creditCardSpendingAmountPerCategory.length) {
       await bot.sendMessageToRecipient(
         messageFormatter.formatCreditCardDailySettlementReport(
-          creditCardTransactionAmountToSettle,
+          creditCardSpendingAmountPerCategory,
         ),
       );
     }
