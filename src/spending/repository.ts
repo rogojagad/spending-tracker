@@ -146,6 +146,7 @@ const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
     from 
       spending
     join category on category.id = spending.category_id
+    join source on source.id = spending.source_id
     where
       source.name like ${"%" + sourceName}
     and
