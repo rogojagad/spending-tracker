@@ -227,6 +227,7 @@ const spendingRepository = {
   getAllSpendingsThisMonth,
   getTodayCreditCardTransactionToSettle,
   getTodayCreditCardSpendingAmountPerCategory,
+  getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt,
 };
 
 export default spendingRepository;
