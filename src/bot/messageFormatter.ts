@@ -61,11 +61,10 @@ const formatCreditCardDailySettlementReport = (
 
   return `
     You spent ${totalCreditCardSpendingAmount.toIDRString()} on credit card today.
-    \n\n
-    Details:
-    ${formatCategorySpendingBreakdown(creditCardSpendingAmountPerCategory)}
-    \n\n
-    Don't forget to transfer the fund to your appropriate credit card payment account.
+    \n\nDetails:${
+    formatCategorySpendingBreakdown(creditCardSpendingAmountPerCategory)
+  }
+    \n\nDon't forget to transfer the fund to your appropriate credit card payment account.
   `;
 };
 
