@@ -185,11 +185,11 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
     and
       spending.created_at >= ${
     filter.createdAt.fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     and
       spending.created_at < ${
     filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     order by
       category.priority asc,
       spending.created_at asc
