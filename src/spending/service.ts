@@ -1,19 +1,15 @@
 import spendingRepository, {
   ISpendingWithCategoryNameAndSourceName,
 } from "~/src/spending/repository.ts";
-import dayjs from "dayjs";
+import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
 
-const getManySpendings = async (): Promise<
+const getManySpendings = async (
+  filter: IGetManySpendingsFilterQueryParam,
+): Promise<
   ISpendingWithCategoryNameAndSourceName[]
 > => {
-  const startFromInclusive = dayjs().subtract(1, "week").startOf("day"); // TODO: Accept from params
-  const toExclusive = dayjs().add(1, "day").startOf("day"); // TODO: Accept from params
-
   return await spendingRepository
-    .getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt(
-      startFromInclusive,
-      toExclusive,
-    );
+    .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(filter);
 };
 
 const spendingService = { getManySpendings };

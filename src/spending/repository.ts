@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import db from "~/src/postgre.ts";
 import { sql } from "kysely";
+import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
 
 export const SPENDING_TABLE = "spending";
 
@@ -166,6 +167,39 @@ const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
     return spendings.rows;
   };
 
+const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
+  filter: IGetManySpendingsFilterQueryParam,
+): Promise<ISpendingWithCategoryNameAndSourceName[]> => {
+  const spendings = await sql<ISpendingWithCategoryNameAndSourceName>`
+    select
+      spending.id, spending.amount, spending.description, category.name as category_name, source.name as source_name, spending.created_at
+    from spending
+    join
+      category on category.id = spending.category_id
+    join
+      source on source.id = spending.source_id
+    where
+      (spending.category_id = COALESCE(${filter.category}, spending.category_id))
+    and
+      (spending.source_id = COALESCE(${filter.source}, spending.source_id))
+    and
+      spending.created_at >= ${
+    filter.createdAt.fromInclusive.format("YYYY-MM-DD HH:mm:ss")
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    and
+      spending.created_at < ${
+    filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
+  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    order by
+      category.priority asc,
+      spending.created_at asc
+  `.execute(
+    db,
+  );
+
+  return spendings.rows;
+};
+
 /*
  ***********************
  * Convenience Queries *
@@ -227,7 +261,7 @@ const spendingRepository = {
   getAllSpendingsThisMonth,
   getTodayCreditCardTransactionToSettle,
   getTodayCreditCardSpendingAmountPerCategory,
-  getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt,
+  getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
 };
 
 export default spendingRepository;
