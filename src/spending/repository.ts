@@ -68,11 +68,11 @@ const getSpendingSummaryByDatetimeRangeGroupByCategoryName = async (
     where
       spending.created_at >= ${
     fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     and
       spending.created_at < ${
     toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     group by 
       category.name, category.priority
     order by
@@ -99,11 +99,11 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
     where
       spending.created_at >= ${
     fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     and
       spending.created_at < ${
     toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     order by
       category.priority asc,
       spending.created_at asc
@@ -125,11 +125,11 @@ const getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange = async (
     and
       spending.created_at >= ${
     fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
     and
       spending.created_at < ${
     toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp AT TIME ZONE 'Asia/Jakarta'
+  }::timestamp
   `.execute(db);
 
   return amount.rows.pop()?.amount;
@@ -153,11 +153,11 @@ const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
     and
       spending.created_at >= ${
       fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-    }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    }::timestamp
     and
       spending.created_at < ${
       toExclusive.format("YYYY-MM-DD HH:mm:ss")
-    }::timestamp AT TIME ZONE 'Asia/Jakarta'
+    }::timestamp
     group by 
       category.name, category.priority
     order by
