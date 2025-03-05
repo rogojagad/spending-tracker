@@ -191,8 +191,8 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
     filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp
     order by
-      category.priority asc,
-      spending.created_at desc
+      spending.created_at desc,
+      category.priority asc
   `.execute(
     db,
   );
