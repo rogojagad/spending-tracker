@@ -192,7 +192,7 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
   }::timestamp
     order by
       category.priority asc,
-      spending.created_at asc
+      spending.created_at desc
   `.execute(
     db,
   );
