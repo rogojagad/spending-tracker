@@ -1,0 +1,15 @@
+meta {
+  name: Get Sources
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{BASE_URL}}/sources
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{TOKEN}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get Spendings
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{BASE_URL}}/spendings
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{TOKEN}}
+}
