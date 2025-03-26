@@ -1,5 +1,9 @@
 import dayjs from "dayjs";
-import { ITotalSpendingAmountByCategoryName } from "~/src/spending/repository.ts";
+import {
+  ITotalSpendingAmountByCategoryName,
+  ITotalSpendingAmountBySourceNameAndCategoryName,
+} from "~/src/spending/repository.ts";
+import {} from "@deno/collection";
 
 const formatCategorySpendingBreakdown = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
@@ -51,27 +55,59 @@ const formatMonthlyReport = (
   `;
 };
 
-const formatCreditCardDailySettlementReport = (
-  creditCardSpendingAmountPerCategory: ITotalSpendingAmountByCategoryName[],
+const formatDailySettlementReport = (
+  spendingAmountsPerSourceNameAndCategoryName:
+    ITotalSpendingAmountBySourceNameAndCategoryName[],
 ): string => {
-  const totalCreditCardSpendingAmount = creditCardSpendingAmountPerCategory
-    .reduce((prev, current) => {
-      return current.amount + prev;
-    }, 0);
+  type SourceName = string;
 
-  return `
-    You spent ${totalCreditCardSpendingAmount.toIDRString()} on credit card today.
-    \n\nDetails:\n${
-    formatCategorySpendingBreakdown(creditCardSpendingAmountPerCategory)
-  }
-    \n\nDon't forget to transfer the fund to your appropriate credit card payment account.
-  `;
+  const spendingPerCategoryBySourceName: Map<
+    SourceName,
+    ITotalSpendingAmountByCategoryName[]
+  > = new Map();
+
+  spendingAmountsPerSourceNameAndCategoryName.forEach((spending) => {
+    const existingSpending = spendingPerCategoryBySourceName.get(
+      spending.sourceName,
+    ) || [];
+
+    spendingPerCategoryBySourceName.set(
+      spending.sourceName,
+      existingSpending.concat(spending),
+    );
+  });
+
+  let messageTemplate = "";
+
+  spendingPerCategoryBySourceName.keys().forEach((sourceName) => {
+    const totalSpendingFromSource = spendingPerCategoryBySourceName.get(
+      sourceName,
+    )?.reduce((prev, next) => {
+      return prev + next.amount;
+    }, 0) || 0;
+
+    messageTemplate = messageTemplate.concat(
+      `You spent ${totalSpendingFromSource.toIDRString()} from ${sourceName} today\n\n`,
+      `Details:\n${
+        formatCategorySpendingBreakdown(
+          spendingPerCategoryBySourceName.get(
+            sourceName,
+          )!,
+        )
+      }\n\n`,
+      `-----------\n\n`,
+    );
+  });
+
+  return messageTemplate.concat(
+    `Don't forget to transfer the fund to your appropriate credit card payment account.`,
+  );
 };
 
 const messageFormatter = {
   formatDailyReport,
   formatMonthlyReport,
-  formatCreditCardDailySettlementReport,
+  formatDailySettlementReport,
 };
 
 export default messageFormatter;
