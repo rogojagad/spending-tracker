@@ -3,7 +3,6 @@ import {
   ITotalSpendingAmountByCategoryName,
   ITotalSpendingAmountBySourceNameAndCategoryName,
 } from "~/src/spending/repository.ts";
-import {} from "@deno/collection";
 
 const formatCategorySpendingBreakdown = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
