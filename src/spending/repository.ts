@@ -25,6 +25,12 @@ export interface ITotalSpendingAmountByCategoryName {
   amount: number;
 }
 
+export interface ITotalSpendingAmountBySourceNameAndCategoryName {
+  sourceName: string;
+  categoryName: string;
+  amount: number;
+}
+
 const getAll = async (): Promise<ISpending[]> => {
   const result = await db.selectFrom(SPENDING_TABLE).selectAll().execute();
 
@@ -112,44 +118,22 @@ const getAllSpendingsByDatetimeRangeSortByCategoryThenCreatedAt = async (
   return spendings.rows;
 };
 
-const getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange = async (
-  sourceName: string,
-  fromInclusive: dayjs.Dayjs,
-  toExclusive: dayjs.Dayjs,
-): Promise<number | undefined> => {
-  const amount = await sql<{ amount: number }>`
-    select sum(spending.amount) as amount
-    from spending
-    join source on source.id = spending.source_id
-    where source.name like ${"%" + sourceName}
-    and
-      spending.created_at >= ${
-    fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp
-    and
-      spending.created_at < ${
-    toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp
-  `.execute(db);
-
-  return amount.rows.pop()?.amount;
-};
-
-const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
+const getSpendingAmountPerCategoryWithSourceNeedSettlementCreatedAtDatetimeRange =
   async (
-    sourceName: string,
     fromInclusive: dayjs.Dayjs,
     toExclusive: dayjs.Dayjs,
-  ): Promise<ITotalSpendingAmountByCategoryName[]> => {
-    const spendings = await sql<ITotalSpendingAmountByCategoryName>`
+  ): Promise<ITotalSpendingAmountBySourceNameAndCategoryName[]> => {
+    const spendings = await sql<
+      ITotalSpendingAmountBySourceNameAndCategoryName
+    >`
     select 
-      category.name as category_name, sum(spending.amount) as amount
+      source.name as source_name, category.name as category_name, sum(spending.amount) as amount
     from 
       spending
     join category on category.id = spending.category_id
     join source on source.id = spending.source_id
     where
-      source.name like ${"%" + sourceName}
+      source.is_settlement_needed = true
     and
       spending.created_at >= ${
       fromInclusive.format("YYYY-MM-DD HH:mm:ss")
@@ -159,7 +143,7 @@ const getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange =
       toExclusive.format("YYYY-MM-DD HH:mm:ss")
     }::timestamp
     group by 
-      category.name, category.priority
+      source.name, category.name, category.priority
     order by
       category.priority asc
   `.execute(db);
@@ -232,21 +216,10 @@ const getAllSpendingsThisMonth = async (): Promise<
   );
 };
 
-const getTodayCreditCardTransactionToSettle = async (): Promise<
-  number | undefined
+const getTodaySpendingAmountToSettlePerSourceAndCategory = async (): Promise<
+  ITotalSpendingAmountBySourceNameAndCategoryName[]
 > => {
-  return await getSpendingAmountWithSourceNameLikeCreatedAtDatetimeRange(
-    "Credit Card", // <-- actually not clean to hardcode like this. keeping it for simplicity's sake. if there are more spending sources need a settlement behavior, let's rework this.
-    dayjs().startOf("day"),
-    dayjs().startOf("day").add(1, "day"),
-  );
-};
-
-const getTodayCreditCardSpendingAmountPerCategory = async (): Promise<
-  ITotalSpendingAmountByCategoryName[]
-> => {
-  return await getSpendingAmountPerCategoryWithSourceNameLikeCreatedAtDatetimeRange(
-    "Credit Card",
+  return await getSpendingAmountPerCategoryWithSourceNeedSettlementCreatedAtDatetimeRange(
     dayjs().startOf("day"),
     dayjs().startOf("day").add(1, "day"),
   );
@@ -259,8 +232,7 @@ const spendingRepository = {
   getTodaySpendingSummary,
   getThisMonthSpendingSummary,
   getAllSpendingsThisMonth,
-  getTodayCreditCardTransactionToSettle,
-  getTodayCreditCardSpendingAmountPerCategory,
+  getTodaySpendingAmountToSettlePerSourceAndCategory,
   getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
 };
 

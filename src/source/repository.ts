@@ -6,6 +6,7 @@ export interface ISource {
   id: string;
   name: string;
   isActive: boolean;
+  isSettlementNeeded: boolean;
 }
 
 const getAll = async (): Promise<ISource[]> => {

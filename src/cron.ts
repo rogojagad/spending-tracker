@@ -15,11 +15,11 @@ const register = (bot: TelegramBot): void => {
     );
 
     const creditCardSpendingAmountPerCategory = await spendingRepository
-      .getTodayCreditCardSpendingAmountPerCategory();
+      .getTodaySpendingAmountToSettlePerSourceAndCategory();
 
     if (creditCardSpendingAmountPerCategory.length) {
       await bot.sendMessageToRecipient(
-        messageFormatter.formatCreditCardDailySettlementReport(
+        messageFormatter.formatDailySettlementReport(
           creditCardSpendingAmountPerCategory,
         ),
       );
