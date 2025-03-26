@@ -6,7 +6,7 @@ import spreadsheetRepository from "~/src/spreadsheet/repository.ts";
 
 const register = (bot: TelegramBot): void => {
   /** 23:59 PM JKT daily */
-  Deno.cron("Daily Report", "* * * * *", async () => {
+  Deno.cron("Daily Report", "59 16 * * *", async () => {
     const todaySpendingSummary = await spendingRepository
       .getTodaySpendingSummary();
 
