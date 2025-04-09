@@ -31,6 +31,12 @@ export interface ITotalSpendingAmountBySourceNameAndCategoryName {
   amount: number;
 }
 
+export interface ITotalSpendingAmountByMonthAndCategoryName {
+  amount: number;
+  month: Date;
+  categoryName: string;
+}
+
 const getAll = async (): Promise<ISpending[]> => {
   const result = await db.selectFrom(SPENDING_TABLE).selectAll().execute();
 
@@ -184,6 +190,24 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
   return spendings.rows;
 };
 
+const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
+  ITotalSpendingAmountByMonthAndCategoryName[]
+> => {
+  const summaries = await sql<ITotalSpendingAmountByMonthAndCategoryName>`
+    select 
+      date_trunc('month', spending.created_at) as month,
+      sum(spending.amount),
+      category.name as category_name
+    from spending 
+    join category on category.id = spending.category_id
+    group by month, category_name
+    order by month desc
+  `
+    .execute(db);
+
+  return summaries.rows;
+};
+
 /*
  ***********************
  * Convenience Queries *
@@ -234,6 +258,7 @@ const spendingRepository = {
   getAllSpendingsThisMonth,
   getTodaySpendingAmountToSettlePerSourceAndCategory,
   getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
+  getSpendingSummariesGroupByMonthAndCategoryName,
 };
 
 export default spendingRepository;

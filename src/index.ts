@@ -55,6 +55,11 @@ app.get("/spendings", auth, async (c: Context) => {
   return c.json(spendings);
 });
 
+app.get("/spendings/summaries/months", auth, async (c: Context) => {
+  const summaries = await spendingService.getMonthlySpendingSummaries();
+  return c.json(summaries);
+});
+
 app.get("/categories", auth, async (c: Context) => {
   const categories = await categoryService.getAll();
   return c.json(categories);
