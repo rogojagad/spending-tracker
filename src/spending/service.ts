@@ -2,6 +2,7 @@ import spendingRepository, {
   ISpendingWithCategoryNameAndSourceName,
 } from "~/src/spending/repository.ts";
 import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
+import dayjs from "dayjs";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -29,13 +30,15 @@ const getMonthlySpendingSummaries = async (): Promise<
   const monthAndCategoryNameSpendings = await spendingRepository
     .getSpendingSummariesGroupByMonthAndCategoryName();
 
-  const summariesByMonth = new Map<Date, IAmountForCategory[]>();
+  const summariesByMonth = new Map<string, IAmountForCategory[]>();
 
   monthAndCategoryNameSpendings.forEach((spending) => {
-    const existingSummaryByMonth = summariesByMonth.get(spending.month) || [];
+    const { month } = spending;
+    const monthString = dayjs(month).format();
+    const existingSummaryByMonth = summariesByMonth.get(monthString) || [];
 
     summariesByMonth.set(
-      spending.month,
+      monthString,
       existingSummaryByMonth.concat({
         amount: spending.amount,
         categoryName: spending.categoryName,
@@ -44,7 +47,7 @@ const getMonthlySpendingSummaries = async (): Promise<
   });
 
   return summariesByMonth.entries().map((entry) => {
-    const month = entry[0];
+    const month = dayjs(entry[0]).toDate();
     const summaries = entry[1];
     const total = summaries.reduce((prev, next) => {
       return prev + next.amount;
