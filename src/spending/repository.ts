@@ -196,7 +196,7 @@ const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
   const summaries = await sql<ITotalSpendingAmountByMonthAndCategoryName>`
     select 
       date_trunc('month', spending.created_at) as month,
-      sum(spending.amount),
+      sum(spending.amount) as amount,
       category.name as category_name
     from spending 
     join category on category.id = spending.category_id
