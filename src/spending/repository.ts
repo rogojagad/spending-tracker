@@ -31,7 +31,7 @@ export interface ITotalSpendingAmountBySourceNameAndCategoryName {
   amount: number;
 }
 
-export interface ITotalSpendingAmountByMonthAndCategoryName {
+export interface ITotalSpendingAmountForMonthAndCategoryName {
   amount: number;
   month: Date;
   categoryName: string;
@@ -191,9 +191,9 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
 };
 
 const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
-  ITotalSpendingAmountByMonthAndCategoryName[]
+  ITotalSpendingAmountForMonthAndCategoryName[]
 > => {
-  const summaries = await sql<ITotalSpendingAmountByMonthAndCategoryName>`
+  const summaries = await sql<ITotalSpendingAmountForMonthAndCategoryName>`
     select 
       date_trunc('month', spending.created_at) as month,
       sum(spending.amount) as amount,
