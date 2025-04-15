@@ -21,5 +21,6 @@
     "spreadsheet": "npm:google-spreadsheet@4.1.4",
     "zod": "https://deno.land/x/zod@v3.23.8/mod.ts",
     "~/": "./"
-  }
+  },
+  "unstable": ["cron", "otel"]
 }
