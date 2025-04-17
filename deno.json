@@ -2,7 +2,7 @@
   "tasks": {
     "install": "deno install --allow-import",
     "migrate:up": "deno run -A --unstable https://deno.land/x/nessie/cli.ts migrate",
-    "serve": "deno run -A --check --watch --unstable-cron src/index.ts",
+    "serve": "deno run -A --check --watch --unstable-cron --unstable-otel src/index.ts",
     "start": "deno task migrate:up && deno task serve"
   },
   "imports": {
