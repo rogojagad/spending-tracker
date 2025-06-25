@@ -112,14 +112,12 @@ const formatLimitAlert = (
 ): string => {
   return `
   Alert! You have reached the ${MONTHLY_LIMIT_THRESHOLD_PERCENTAGE}% of your limit for following limits:
-  -------\n\n
+  -------\n
   ${
     limitsNeedAlert.map((limit) => {
-      return `
-      Limit Name: ${limit.name}
-      \nLimit Value: ${limit.value.toIDRString()}
-      \nCurrent Usage: ${limit.usedValue.toIDRString()}
-      \nUsage Percentage: ${limit.usedPercentage.toFixed(2)}%
+      return `Limit Name: ${limit.name}\nLimit Value: ${limit.value.toIDRString()}\nCurrent Usage: ${limit.usedValue.toIDRString()}\nUsage Percentage: ${
+        limit.usedPercentage.toFixed(2)
+      }%
     `;
     }).join("\n-------\n")
   }
