@@ -3,6 +3,10 @@ import {
   ITotalSpendingAmountByCategoryName,
   ITotalSpendingAmountBySourceNameAndCategoryName,
 } from "~/src/spending/repository.ts";
+import {
+  ILimitCheckResult,
+  MONTHLY_LIMIT_THRESHOLD_PERCENTAGE,
+} from "../limit/service.ts";
 
 const formatCategorySpendingBreakdown = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],
@@ -103,10 +107,30 @@ const formatDailySettlementReport = (
   );
 };
 
+const formatLimitAlert = (
+  limitsNeedAlert: ILimitCheckResult[],
+): string => {
+  return `
+  Alert! You have reached the ${MONTHLY_LIMIT_THRESHOLD_PERCENTAGE}% of your limit for following limits:
+  -------\n\n
+  ${
+    limitsNeedAlert.map((limit) => {
+      return `
+        Limit Name: ${limit.name}\n
+        Limit Value: ${limit.value.toIDRString()}\n
+        Current Usage: ${limit.usedValue.toIDRString()}\n
+        Usage Percentage: ${limit.usedPercentage.toFixed(2)}%\n
+    `;
+    }).join("-------\n\n")
+  }
+  `;
+};
+
 const messageFormatter = {
   formatDailyReport,
   formatMonthlyReport,
   formatDailySettlementReport,
+  formatLimitAlert,
 };
 
 export default messageFormatter;
