@@ -50,13 +50,6 @@ const getManyAppliedLimitsByCategoryIdOrSourceId = async (
   categoryId: string,
   sourceId: string,
 ): Promise<ILimit[]> => {
-  // const result = await sql<ILimit>`
-  //   select * from ${SPENDING_LIMIT_TABLE}
-  //   where (category_id = ${categoryId} and source_id = ${sourceId})
-  //     or (category_id = ${categoryId} and source_id IS NULL)
-  //     or (category_id IS NULL and source_id = ${sourceId})
-  // `.execute(db);
-
   const result = await db.selectFrom("spendingLimit").selectAll().where((eb) =>
     eb.or([
       eb.and([

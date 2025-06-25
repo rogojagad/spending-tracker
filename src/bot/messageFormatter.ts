@@ -116,12 +116,12 @@ const formatLimitAlert = (
   ${
     limitsNeedAlert.map((limit) => {
       return `
-        Limit Name: ${limit.name}\n
-        Limit Value: ${limit.value.toIDRString()}\n
-        Current Usage: ${limit.usedValue.toIDRString()}\n
-        Usage Percentage: ${limit.usedPercentage.toFixed(2)}%\n
+      Limit Name: ${limit.name}
+      \nLimit Value: ${limit.value.toIDRString()}
+      \nCurrent Usage: ${limit.usedValue.toIDRString()}
+      \nUsage Percentage: ${limit.usedPercentage.toFixed(2)}%
     `;
-    }).join("-------\n\n")
+    }).join("\n-------\n")
   }
   `;
 };
