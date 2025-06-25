@@ -53,8 +53,8 @@ const getManyAppliedLimitsByCategoryIdOrSourceId = async (
   const result = await sql<ILimit>`
     select * from ${SPENDING_LIMIT_TABLE}
     where (category_id = ${categoryId} or source_id = ${sourceId})
-      or (category_id = ${categoryId} and source_id = NULL)
-      or (category_id = NULL and source_id = ${sourceId})
+      or (category_id = ${categoryId} and source_id IS NULL)
+      or (category_id IS NULL and source_id = ${sourceId})
   `.execute(db);
 
   return result.rows;

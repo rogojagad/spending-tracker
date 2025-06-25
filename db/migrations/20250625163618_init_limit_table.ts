@@ -31,5 +31,6 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
 
   /** Runs on rollback */
   async down(_info: Info): Promise<void> {
+    await this.client.queryArray(`DROP TABLE IF EXISTS spending_limit;`);
   }
 }
