@@ -24,8 +24,8 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
 
     await this.client.queryArray(`
         -- Add indexes for performance
-        CREATE INDEX idx_limit_category_id ON limit(category_id) WHERE category_id IS NOT NULL;
-        CREATE INDEX idx_limit_source_id ON limit(source_id) WHERE source_id IS NOT NULL;
+        CREATE INDEX idx_spending_limit_category_id ON spending_limit(category_id) WHERE category_id IS NOT NULL;
+        CREATE INDEX idx_spending_limit_source_id ON spending_limit(source_id) WHERE source_id IS NOT NULL;
     `);
   }
 
