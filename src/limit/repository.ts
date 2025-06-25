@@ -1,7 +1,7 @@
 import { sql } from "kysely";
 import db from "../postgre.ts";
 
-export const LIMIT_TABLE = "limit";
+export const SPENDING_LIMIT_TABLE = "spending_limit";
 
 /**
  * Represents a spending limit configuration.
@@ -37,10 +37,10 @@ const getAllWithCategoryAndSourceName = async (): Promise<
   ILimitWithCategoryAndSourceName[]
 > => {
   const result = await sql<ILimitWithCategoryAndSourceName>`
-    select limit.id as id, limit.name as name, limit.value as value, category.name as category_name, source.name as source_name
-    from limit
-    join category on limit.category_id = category.id
-    join source on limit.source_id = source.id
+    select ${SPENDING_LIMIT_TABLE}.id as id, ${SPENDING_LIMIT_TABLE}.name as name, ${SPENDING_LIMIT_TABLE}.value as value, category.name as category_name, source.name as source_name
+    from ${SPENDING_LIMIT_TABLE}
+    join category on ${SPENDING_LIMIT_TABLE}.category_id = category.id
+    join source on ${SPENDING_LIMIT_TABLE}.source_id = source.id
   `.execute(db);
 
   return result.rows;
@@ -51,7 +51,7 @@ const getManyAppliedLimitsByCategoryIdOrSourceId = async (
   sourceId: string,
 ): Promise<ILimit[]> => {
   const result = await sql<ILimit>`
-    select * from limit
+    select * from ${SPENDING_LIMIT_TABLE}
     where (category_id = ${categoryId} or source_id = ${sourceId})
       or (category_id = ${categoryId} and source_id = NULL)
       or (category_id = NULL and source_id = ${sourceId})

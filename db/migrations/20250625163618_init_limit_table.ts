@@ -7,7 +7,7 @@ import {
 export default class extends AbstractMigration<ClientPostgreSQL> {
   /** Runs on migrate */
   async up(_info: Info): Promise<void> {
-    await this.client.queryArray(`CREATE TABLE limit (
+    await this.client.queryArray(`CREATE TABLE spending_limit (
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             name TEXT NOT NULL,
             value INTEGER NOT NULL,

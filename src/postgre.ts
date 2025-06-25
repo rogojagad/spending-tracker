@@ -11,7 +11,7 @@ interface IDatabase {
   category: ICategory;
   spending: ISpending;
   source: ISource;
-  limit: ILimit;
+  spendingLimit: ILimit;
 }
 
 const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
