@@ -5,6 +5,8 @@ import spendingRepository from "~/src/spending/repository.ts";
 
 import "../../types/extensions/number.ts";
 import sourceCategory, { ISource } from "~/src/source/repository.ts";
+import limitService from "../../limit/service.ts";
+import messageFormatter from "../messageFormatter.ts";
 
 /**
  * Triggered when user send `{amount} {description}` e.g. `1000000 electricity bill`
@@ -53,6 +55,14 @@ export async function addNewSpending(
       category!.name
     } from ${source!.name}`,
   );
+
+  const limitsNeedAlert = await limitService.checkAndCalculateLimitForSpending(
+    spending,
+  );
+
+  if (!limitsNeedAlert.length) return;
+
+  await ctx.reply(messageFormatter.formatLimitAlert(limitsNeedAlert));
 
   return;
 }

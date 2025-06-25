@@ -5,11 +5,13 @@ import { ISpending } from "~/src/spending/repository.ts";
 import { ICategory } from "~/src/category/repository.ts";
 import { CamelCasePlugin } from "kysely";
 import { ISource } from "~/src/source/repository.ts";
+import { ILimit } from "./limit/repository.ts";
 
 interface IDatabase {
   category: ICategory;
   spending: ISpending;
   source: ISource;
+  limit: ILimit;
 }
 
 const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
