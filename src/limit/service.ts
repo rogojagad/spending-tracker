@@ -7,6 +7,12 @@ export interface ILimitCheckResult extends ILimit {
   usedPercentage: number;
 }
 
+export interface ILimitCheckResultWithCategoryAndSourceName
+  extends ILimitCheckResult {
+  categoryName?: string | null;
+  sourceName?: string | null;
+}
+
 /**
  * When limit value is already 60% used, then needs to alert.
  */
@@ -55,7 +61,9 @@ const checkAndCalculateLimitForSpending = async (
   return checkResults;
 };
 
-const getAndCalculateAllLimitUsage = async (): Promise<ILimitCheckResult[]> => {
+const getAndCalculateAllLimitUsage = async (): Promise<
+  ILimitCheckResultWithCategoryAndSourceName[]
+> => {
   console.log(`Fetching limits...`);
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
   const currentTime = dayjs();
