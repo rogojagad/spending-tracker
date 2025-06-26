@@ -115,7 +115,7 @@ const formatLimitAlert = (
       limit.usedPercentage.toFixed(2)
     }%
     `;
-  }).join("-------\n");
+  }).join("-------\n").trimStart();
 
   return `
   Alert! You have reached the ${MONTHLY_LIMIT_THRESHOLD_PERCENTAGE}% of your limit for following limits:
