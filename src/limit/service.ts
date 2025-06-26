@@ -21,11 +21,11 @@ const checkAndCalculateLimitForSpending = async (
       spending.categoryId,
       spending.sourceId,
     );
+  const currentTime = dayjs();
+  const startOfMonth = currentTime.startOf("month");
 
   for (const limit of limits) {
     const { categoryId, sourceId, value } = limit;
-    const currentTime = dayjs();
-    const startOfMonth = currentTime.startOf("month");
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
@@ -55,6 +55,49 @@ const checkAndCalculateLimitForSpending = async (
   return checkResults;
 };
 
-const limitService = { checkAndCalculateLimitForSpending };
+const getAndCalculateAllLimitUsage = async (): Promise<ILimitCheckResult[]> => {
+  const limits = await limitRepository.getAllWithCategoryAndSourceName();
+  const currentTime = dayjs();
+  const startOfMonth = currentTime.startOf("month");
+
+  const spendingsForEachLimit = await Promise.all(limits.map(
+    (limit) => {
+      return spendingRepository
+        .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
+          category: limit.categoryId || null,
+          source: limit.sourceId || null,
+          createdAt: {
+            fromInclusive: startOfMonth,
+            toExclusive: currentTime,
+          },
+        });
+    },
+  ));
+
+  /**
+   * `Promise.all` guarantee the resulting array item's order is the same as the promise passed, regardless of the completion order.
+   * Link: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all#return_value
+   *
+   * So, safe to assume:
+   * - `spendingsForEachLimit[0]` is for `limits[0]`
+   * - `spendingsForEachLimit[1]` is for `limits[1]`
+   * - ...
+   */
+
+  return limits.map((limit, index) => {
+    const spendings = spendingsForEachLimit[index];
+    const usedValue = spendings.reduce((prev, current) => {
+      return prev + current.amount;
+    }, 0);
+    const usedPercentage = (usedValue / limit.value) * 100;
+
+    return { ...limit, usedValue, usedPercentage };
+  });
+};
+
+const limitService = {
+  checkAndCalculateLimitForSpending,
+  getAndCalculateAllLimitUsage,
+};
 
 export default limitService;

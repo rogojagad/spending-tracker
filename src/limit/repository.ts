@@ -27,8 +27,7 @@ export interface ILimit {
   sourceId?: string;
 }
 
-interface ILimitWithCategoryAndSourceName
-  extends Omit<ILimit, "categoryId" | "sourceId"> {
+interface ILimitWithCategoryAndSourceName extends ILimit {
   categoryName?: string;
   sourceName?: string;
 }
@@ -37,7 +36,7 @@ const getAllWithCategoryAndSourceName = async (): Promise<
   ILimitWithCategoryAndSourceName[]
 > => {
   const result = await sql<ILimitWithCategoryAndSourceName>`
-    select ${SPENDING_LIMIT_TABLE}.id as id, ${SPENDING_LIMIT_TABLE}.name as name, ${SPENDING_LIMIT_TABLE}.value as value, category.name as category_name, source.name as source_name
+    select ${SPENDING_LIMIT_TABLE}.category_id as category_id, ${SPENDING_LIMIT_TABLE}.source_id as source_id, ${SPENDING_LIMIT_TABLE}.id as id, ${SPENDING_LIMIT_TABLE}.name as name, ${SPENDING_LIMIT_TABLE}.value as value, category.name as category_name, source.name as source_name
     from ${SPENDING_LIMIT_TABLE}
     join category on ${SPENDING_LIMIT_TABLE}.category_id = category.id
     join source on ${SPENDING_LIMIT_TABLE}.source_id = source.id

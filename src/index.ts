@@ -3,6 +3,7 @@ import { generateToken, validatePassword } from "~/src/middleware.ts";
 import { type Context, Hono } from "@hono/hono";
 import categoryController from "./category/controller.ts";
 import cron from "~/src/cron.ts";
+import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import TelegramBot from "~/src/bot/client.ts";
@@ -39,6 +40,7 @@ app.get("/ping", (c: Context) => {
 app.route("/spendings", spendingController);
 app.route("/categories", categoryController);
 app.route("/sources", sourceController);
+app.route("/limits", limitController);
 
 cron.register(bot);
 
