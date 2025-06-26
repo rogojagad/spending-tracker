@@ -1,13 +1,11 @@
-import { type Context, Hono } from "@hono/hono";
 import { cors, logger } from "@hono/middleware";
-import TelegramBot from "~/src/bot/client.ts";
+import { generateToken, validatePassword } from "~/src/middleware.ts";
+import { type Context, Hono } from "@hono/hono";
+import categoryController from "./category/controller.ts";
 import cron from "~/src/cron.ts";
-import spendingService from "~/src/spending/service.ts";
-import categoryService from "~/src/category/service.ts";
-import sourceService from "~/src/source/service.ts";
-import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
-import dayjs from "dayjs";
-import { auth, generateToken, validatePassword } from "~/src/middleware.ts";
+import sourceController from "./source/controller.ts";
+import spendingController from "./spending/controller.ts";
+import TelegramBot from "~/src/bot/client.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -38,37 +36,9 @@ app.get("/ping", (c: Context) => {
   return c.json({ data: "pong" });
 });
 
-app.get("/spendings", auth, async (c: Context) => {
-  const { category = null, source = null, fromInclusive, toExclusive } = c.req
-    .query();
-  const getSpendingsFilters: IGetManySpendingsFilterQueryParam = {
-    category,
-    source,
-    createdAt: {
-      fromInclusive: fromInclusive
-        ? dayjs(fromInclusive)
-        : dayjs().startOf("day"), // if date filter not provided, default to today
-      toExclusive: toExclusive ? dayjs(toExclusive) : dayjs().endOf("day"),
-    },
-  };
-  const spendings = await spendingService.getManySpendings(getSpendingsFilters);
-  return c.json(spendings);
-});
-
-app.get("/spendings/summaries/months", auth, async (c: Context) => {
-  const summaries = await spendingService.getMonthlySpendingSummaries();
-  return c.json(summaries);
-});
-
-app.get("/categories", auth, async (c: Context) => {
-  const categories = await categoryService.getAll();
-  return c.json(categories);
-});
-
-app.get("/sources", auth, async (c: Context) => {
-  const sources = await sourceService.getAll();
-  return c.json(sources);
-});
+app.route("/spendings", spendingController);
+app.route("/categories", categoryController);
+app.route("/sources", sourceController);
 
 cron.register(bot);
 
