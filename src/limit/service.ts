@@ -56,10 +56,12 @@ const checkAndCalculateLimitForSpending = async (
 };
 
 const getAndCalculateAllLimitUsage = async (): Promise<ILimitCheckResult[]> => {
+  console.log(`Fetching limits...`);
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
   const currentTime = dayjs();
   const startOfMonth = currentTime.startOf("month");
 
+  console.log(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
     (limit) => {
       return spendingRepository

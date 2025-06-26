@@ -28,21 +28,29 @@ export interface ILimit {
 }
 
 interface ILimitWithCategoryAndSourceName extends ILimit {
-  categoryName?: string;
-  sourceName?: string;
+  categoryName?: string | null;
+  sourceName?: string | null;
 }
 
 const getAllWithCategoryAndSourceName = async (): Promise<
   ILimitWithCategoryAndSourceName[]
 > => {
-  const result = await sql<ILimitWithCategoryAndSourceName>`
-    select ${SPENDING_LIMIT_TABLE}.category_id as category_id, ${SPENDING_LIMIT_TABLE}.source_id as source_id, ${SPENDING_LIMIT_TABLE}.id as id, ${SPENDING_LIMIT_TABLE}.name as name, ${SPENDING_LIMIT_TABLE}.value as value, category.name as category_name, source.name as source_name
-    from ${SPENDING_LIMIT_TABLE}
-    join category on ${SPENDING_LIMIT_TABLE}.category_id = category.id
-    join source on ${SPENDING_LIMIT_TABLE}.source_id = source.id
-  `.execute(db);
+  const result = await db
+    .selectFrom("spendingLimit")
+    .leftJoin("category", "spendingLimit.categoryId", "category.id")
+    .leftJoin("source", "spendingLimit.sourceId", "source.id")
+    .select([
+      "spendingLimit.id as id",
+      "spendingLimit.name as name",
+      "spendingLimit.value as value",
+      "spendingLimit.categoryId as categoryId",
+      "spendingLimit.sourceId as sourceId",
+      "category.name as categoryName",
+      "source.name as sourceName",
+    ])
+    .execute();
 
-  return result.rows;
+  return result;
 };
 
 const getManyAppliedLimitsByCategoryIdOrSourceId = async (

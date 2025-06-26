@@ -1,0 +1,15 @@
+meta {
+  name: Get Limits
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{BASE_URL}}/limits
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{TOKEN}}
+}
