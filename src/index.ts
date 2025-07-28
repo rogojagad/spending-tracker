@@ -6,6 +6,7 @@ import cron from "~/src/cron.ts";
 import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
+import configurationController from "./configuration/controller.ts";
 import TelegramBot from "~/src/bot/client.ts";
 
 /** HTTP Server */
@@ -41,6 +42,7 @@ app.route("/spendings", spendingController);
 app.route("/categories", categoryController);
 app.route("/sources", sourceController);
 app.route("/limits", limitController);
+app.route("/configs", configurationController);
 
 cron.register(bot);
 
