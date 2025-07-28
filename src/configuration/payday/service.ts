@@ -54,6 +54,13 @@ const populateForThisYear = async (): Promise<void> => {
         },
       );
 
+      console.log(
+        `Month Of Payday: ${monthOfPayday} | ${
+          JSON.stringify(payday, null, 2)
+        }`,
+      );
+      console.log(`Existing Payday for Month: ${existingPaydayForMonth}`);
+
       if (existingPaydayForMonth) {
         console.info(
           `Payday config for month ${monthOfPayday} already exists ${
