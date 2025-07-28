@@ -12,7 +12,7 @@ app.use(cors());
 app.post("/paydays/yearly", auth, async (c: Context) => {
   await paydayConfigurationService.populateForThisYear();
 
-  return c.status(200);
+  return c.json({});
 });
 
 app.get("/paydays/yearly", auth, async (c: Context) => {
