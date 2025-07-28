@@ -35,7 +35,7 @@ const getActualPaydayForMonthNum = (monthInNum: number): IPayday => {
 
   return {
     note: adjustmentNote,
-    paydayDate: actualPayday.toDate(),
+    paydayDate: actualPayday.startOf("day").toDate(),
   } as IPayday;
 };
 
@@ -69,7 +69,7 @@ const populateForThisYear = async (): Promise<void> => {
         );
       }
 
-      return !!existingPaydayForMonth;
+      return !existingPaydayForMonth;
     });
 
   if (paydays.length !== 0) {
