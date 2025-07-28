@@ -12,7 +12,7 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
         note TEXT NOT NULL,
         payday_date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`);
 
     await this.client.queryArray(`
