@@ -9,8 +9,10 @@ const app = new Hono();
 app.use(logger());
 app.use(cors());
 
-app.post("/yearly", auth, async (_c: Context) => {
+app.post("/yearly", auth, async (c: Context) => {
   await paydayConfigurationService.populateForThisYear();
+
+  return c.status(200);
 });
 
 app.get("/yearly", auth, async (c: Context) => {

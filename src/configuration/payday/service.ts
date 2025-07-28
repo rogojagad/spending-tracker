@@ -43,7 +43,9 @@ const populateForThisYear = async (): Promise<void> => {
   const thisYearPopulatedPaydays = await paydayConfigurationRepository
     .getPaydaysForThisYear();
 
-  const paydays = Array(12)
+  const paydays = Array.from({ length: 12 }, (_, i) => {
+    return i;
+  })
     .map(getActualPaydayForMonthNum)
     .filter((payday) => {
       const monthOfPayday = dayjs(payday.paydayDate).month();
