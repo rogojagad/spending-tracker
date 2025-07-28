@@ -43,10 +43,7 @@ const populateForThisYear = async (): Promise<void> => {
   const thisYearPopulatedPaydays = await paydayConfigurationRepository
     .getPaydaysForThisYear();
 
-  const paydays = Array
-    .from({ length: 12 }, (_, idx) => {
-      return idx + 1;
-    })
+  const paydays = Array(12)
     .map(getActualPaydayForMonthNum)
     .filter((payday) => {
       const monthOfPayday = dayjs(payday.paydayDate).month();
@@ -57,16 +54,24 @@ const populateForThisYear = async (): Promise<void> => {
         },
       );
 
-      console.info(
-        `Payday config for month ${monthOfPayday} already exists ${
-          JSON.stringify(existingPaydayForMonth, null, 2)
-        }. Skipping...`,
-      );
+      if (existingPaydayForMonth) {
+        console.info(
+          `Payday config for month ${monthOfPayday} already exists ${
+            JSON.stringify(existingPaydayForMonth, null, 2)
+          }. Skipping...`,
+        );
+      }
 
       return !!existingPaydayForMonth;
     });
 
-  await paydayConfigurationRepository.insertMany(paydays);
+  if (paydays.length !== 0) {
+    await paydayConfigurationRepository.insertMany(paydays);
+  } else {
+    console.info(
+      `Payday config for this year already fully populated, skipping...`,
+    );
+  }
 
   console.info(`Finish creating payday configuration`);
 };

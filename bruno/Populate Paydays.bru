@@ -1,0 +1,19 @@
+meta {
+  name: Populate Paydays
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{BASE_URL}}/configs/paydays/yearly
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{TOKEN}}
+}
+
+settings {
+  encodeUrl: true
+}
