@@ -21,4 +21,9 @@ app.get("/paydays/yearly", auth, async (c: Context) => {
   return c.json(paydays);
 });
 
+app.get("/paydays/latest", auth, async (c: Context) => {
+  const paydays = await paydayConfigurationService.getLatest();
+  return c.json(paydays);
+});
+
 export default app;

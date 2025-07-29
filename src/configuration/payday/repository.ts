@@ -33,6 +33,16 @@ const getManyForRange = async (
   return paydays.rows;
 };
 
+const getLatest = async (): Promise<IPayday | undefined> => {
+  const result = await db.selectFrom(PAYDAY_TABLE).selectAll().where(
+    "paydayDate",
+    "<",
+    dayjs().startOf("day").toDate(),
+  ).executeTakeFirst();
+
+  return result;
+};
+
 /*
  ***********************
  * Convenience Queries *
@@ -45,6 +55,10 @@ const getPaydaysForThisYear = async (): Promise<IPayday[]> => {
   );
 };
 
-const paydayConfigurationRepository = { insertMany, getPaydaysForThisYear };
+const paydayConfigurationRepository = {
+  insertMany,
+  getPaydaysForThisYear,
+  getLatest,
+};
 
 export default paydayConfigurationRepository;

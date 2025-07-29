@@ -87,6 +87,14 @@ const getAllThisYear = (): Promise<IPayday[]> => {
   return paydayConfigurationRepository.getPaydaysForThisYear();
 };
 
-const paydayConfigurationService = { populateForThisYear, getAllThisYear };
+const getLatest = (): Promise<IPayday | undefined> => {
+  return paydayConfigurationRepository.getLatest();
+};
+
+const paydayConfigurationService = {
+  populateForThisYear,
+  getAllThisYear,
+  getLatest,
+};
 
 export default paydayConfigurationService;
