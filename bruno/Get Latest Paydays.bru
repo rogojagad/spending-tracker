@@ -1,11 +1,11 @@
 meta {
-  name: Populate Paydays
+  name: Get Latest Paydays
   type: http
-  seq: 7
+  seq: 9
 }
 
-post {
-  url: {{BASE_URL}}/configs/paydays/yearly
+get {
+  url: {{BASE_URL}}/configs/paydays/latest
   body: none
   auth: inherit
 }

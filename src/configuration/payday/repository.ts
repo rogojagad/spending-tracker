@@ -38,7 +38,8 @@ const getLatest = async (): Promise<IPayday | undefined> => {
     "paydayDate",
     "<",
     dayjs().startOf("day").toDate(),
-  ).executeTakeFirst();
+  ).orderBy("paydayDate", "desc")
+    .executeTakeFirst();
 
   return result;
 };
