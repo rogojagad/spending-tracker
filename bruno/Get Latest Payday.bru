@@ -1,0 +1,19 @@
+meta {
+  name: Get Latest Payday
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{BASE_URL}}/configs/paydays/latest
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{TOKEN}}
+}
+
+settings {
+  encodeUrl: true
+}
