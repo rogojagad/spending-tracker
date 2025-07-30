@@ -72,17 +72,21 @@ const getAndCalculateAllLimitUsage = async (): Promise<
   console.log(`Fetching limits...`);
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
   const currentTime = dayjs();
-  const startOfMonth = currentTime.startOf("month");
 
   console.log(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
-    (limit) => {
+    async (limit) => {
+      const fromInclusive =
+        limit.applicationPeriod === ApplicationPeriod.MONTHLY
+          ? dayjs().startOf("month")
+          : (dayjs((await paydayConfigurationService.getLatest()).paydayDate));
+
       return spendingRepository
         .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
           category: limit.categoryId || null,
           source: limit.sourceId || null,
           createdAt: {
-            fromInclusive: startOfMonth,
+            fromInclusive,
             toExclusive: currentTime,
           },
         });
