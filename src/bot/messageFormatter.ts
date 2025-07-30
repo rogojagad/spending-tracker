@@ -5,7 +5,7 @@ import {
 } from "~/src/spending/repository.ts";
 import {
   ILimitCheckResult,
-  MONTHLY_LIMIT_THRESHOLD_PERCENTAGE,
+  LIMIT_THRESHOLD_PERCENTAGE,
 } from "../limit/service.ts";
 
 const formatCategorySpendingBreakdown = (
@@ -118,7 +118,7 @@ const formatLimitAlert = (
   }).join("-------\n").trimStart();
 
   return `
-  Alert! You have reached the ${MONTHLY_LIMIT_THRESHOLD_PERCENTAGE}% of your limit for following limits:
+  Alert! You have reached the ${LIMIT_THRESHOLD_PERCENTAGE}% of your limit for following limits:
   -------\n${limitAlertMessage}
   `;
 };

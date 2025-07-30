@@ -87,8 +87,12 @@ const getAllThisYear = (): Promise<IPayday[]> => {
   return paydayConfigurationRepository.getPaydaysForThisYear();
 };
 
-const getLatest = (): Promise<IPayday | undefined> => {
-  return paydayConfigurationRepository.getLatest();
+const getLatest = async (): Promise<IPayday> => {
+  const payday = await paydayConfigurationRepository.getLatest();
+
+  if (!payday) throw new Error(`Something wrong! Payday not found!`);
+
+  return payday;
 };
 
 const paydayConfigurationService = {

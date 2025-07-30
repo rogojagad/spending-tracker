@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
 import limitRepository, { ILimit } from "./repository.ts";
+import paydayConfigurationService from "../configuration/payday/service.ts";
 
 export interface ILimitCheckResult extends ILimit {
   usedValue: number;
@@ -16,7 +17,7 @@ export interface ILimitCheckResultWithCategoryAndSourceName
 /**
  * When limit value is already 60% used, then needs to alert.
  */
-export const MONTHLY_LIMIT_THRESHOLD_PERCENTAGE = 60.00;
+export const LIMIT_THRESHOLD_PERCENTAGE = 60.00;
 
 const checkAndCalculateLimitForSpending = async (
   spending: ISpending,
@@ -27,8 +28,9 @@ const checkAndCalculateLimitForSpending = async (
       spending.categoryId,
       spending.sourceId,
     );
+  const payday = await paydayConfigurationService.getLatest();
   const currentTime = dayjs();
-  const startOfMonth = currentTime.startOf("month");
+  const startOfMonth = dayjs(payday.paydayDate);
 
   for (const limit of limits) {
     const { categoryId, sourceId, value } = limit;
@@ -49,7 +51,7 @@ const checkAndCalculateLimitForSpending = async (
 
     const usedPercentage = (usedValue / value) * 100;
 
-    if (usedPercentage >= MONTHLY_LIMIT_THRESHOLD_PERCENTAGE) {
+    if (usedPercentage >= LIMIT_THRESHOLD_PERCENTAGE) {
       checkResults.push({
         ...limit,
         usedValue,
