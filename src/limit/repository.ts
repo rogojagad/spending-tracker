@@ -1,7 +1,11 @@
-import { sql } from "kysely";
 import db from "../postgre.ts";
 
 export const SPENDING_LIMIT_TABLE = "spending_limit";
+
+export enum ApplicationPeriod {
+  MONTHLY = "MONTHLY",
+  PAYDAY = "PAYDAY",
+}
 
 /**
  * Represents a spending limit configuration.
@@ -25,6 +29,7 @@ export interface ILimit {
   value: number;
   categoryId?: string;
   sourceId?: string;
+  applicationPeriod: ApplicationPeriod;
 }
 
 interface ILimitWithCategoryAndSourceName extends ILimit {
@@ -45,6 +50,7 @@ const getAllWithCategoryAndSourceName = async (): Promise<
       "spendingLimit.value as value",
       "spendingLimit.categoryId as categoryId",
       "spendingLimit.sourceId as sourceId",
+      "spendingLimit.applicationPeriod as applicationPeriod",
       "category.name as categoryName",
       "source.name as sourceName",
     ])

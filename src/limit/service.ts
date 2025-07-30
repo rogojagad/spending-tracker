@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
-import limitRepository, { ILimit } from "./repository.ts";
+import limitRepository, { ApplicationPeriod, ILimit } from "./repository.ts";
 import paydayConfigurationService from "../configuration/payday/service.ts";
 
 export interface ILimitCheckResult extends ILimit {
@@ -28,19 +28,22 @@ const checkAndCalculateLimitForSpending = async (
       spending.categoryId,
       spending.sourceId,
     );
-  const payday = await paydayConfigurationService.getLatest();
+
   const currentTime = dayjs();
-  const startOfMonth = dayjs(payday.paydayDate);
 
   for (const limit of limits) {
-    const { categoryId, sourceId, value } = limit;
+    const { categoryId, sourceId, value, applicationPeriod } = limit;
+
+    const fromInclusive = applicationPeriod === ApplicationPeriod.MONTHLY
+      ? dayjs().startOf("month")
+      : (dayjs((await paydayConfigurationService.getLatest()).paydayDate));
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
         category: categoryId || null,
         source: sourceId || null,
         createdAt: {
-          fromInclusive: startOfMonth,
+          fromInclusive,
           toExclusive: currentTime,
         },
       });
