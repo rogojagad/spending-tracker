@@ -9,17 +9,17 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
   async up(info: Info): Promise<void> {
     // create application_period column
     await this.client.queryArray(
-      `alter table "limit" add column application_period text;`,
+      `alter table spending_limit add column application_period text;`,
     );
 
     // update application period to `MONTHLY` by default
     await this.client.queryArray(
-      `update "limit" set application_period = 'MONTHLY'`,
+      `update spending_limit set application_period = 'MONTHLY'`,
     );
 
     // make application_period column non-nullable
     await this.client.queryArray(
-      `alter table "limit" alter column application_period set not null;`,
+      `alter table spending_limit alter column application_period set not null;`,
     );
   }
 
