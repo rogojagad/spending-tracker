@@ -19,6 +19,19 @@ export interface ILimitCheckResultWithCategoryAndSourceName
  */
 export const LIMIT_THRESHOLD_PERCENTAGE = 60.00;
 
+const getLimitStartingApplicationDateByPeriod = async (
+  applicationPeriod: ApplicationPeriod,
+): Promise<dayjs.Dayjs> => {
+  switch (applicationPeriod) {
+    case ApplicationPeriod.PAYDAY:
+      return dayjs((await paydayConfigurationService.getLatest()).paydayDate);
+
+    case ApplicationPeriod.MONTHLY:
+    default:
+      return dayjs().startOf("month");
+  }
+};
+
 const checkAndCalculateLimitForSpending = async (
   spending: ISpending,
 ): Promise<ILimitCheckResult[]> => {
@@ -34,9 +47,9 @@ const checkAndCalculateLimitForSpending = async (
   for (const limit of limits) {
     const { categoryId, sourceId, value, applicationPeriod } = limit;
 
-    const fromInclusive = applicationPeriod === ApplicationPeriod.MONTHLY
-      ? dayjs().startOf("month")
-      : (dayjs((await paydayConfigurationService.getLatest()).paydayDate));
+    const fromInclusive = await getLimitStartingApplicationDateByPeriod(
+      applicationPeriod,
+    );
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
@@ -76,10 +89,9 @@ const getAndCalculateAllLimitUsage = async (): Promise<
   console.log(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
     async (limit) => {
-      const fromInclusive =
-        limit.applicationPeriod === ApplicationPeriod.MONTHLY
-          ? dayjs().startOf("month")
-          : (dayjs((await paydayConfigurationService.getLatest()).paydayDate));
+      const fromInclusive = await getLimitStartingApplicationDateByPeriod(
+        limit.applicationPeriod,
+      );
 
       return spendingRepository
         .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
