@@ -33,7 +33,7 @@ const checkAndCalculateLimitForSpending = async (
     const { categoryId, sourceId, value } = limit;
 
     const createdAtRange = await applicationDateCalculator
-      .calculateLimitStartingApplicationDate(limit);
+      .calculateLimitApplicationDateRange(limit);
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
@@ -70,7 +70,7 @@ const getAndCalculateAllLimitUsage = async (): Promise<
   const spendingsForEachLimit = await Promise.all(limits.map(
     async (limit) => {
       const createdAtRange = await applicationDateCalculator
-        .calculateLimitStartingApplicationDate(limit);
+        .calculateLimitApplicationDateRange(limit);
 
       return spendingRepository
         .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
