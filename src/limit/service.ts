@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
 import limitRepository, { ILimit } from "./repository.ts";
 
@@ -30,22 +29,17 @@ const checkAndCalculateLimitForSpending = async (
       spending.sourceId,
     );
 
-  const currentTime = dayjs();
-
   for (const limit of limits) {
     const { categoryId, sourceId, value } = limit;
 
-    const fromInclusive = await applicationDateCalculator
+    const createdAtRange = await applicationDateCalculator
       .calculateLimitStartingApplicationDate(limit);
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
         category: categoryId || null,
         source: sourceId || null,
-        createdAt: {
-          fromInclusive,
-          toExclusive: currentTime,
-        },
+        createdAt: createdAtRange,
       });
 
     const usedValue = spendings.reduce((prev, current) => {
@@ -71,22 +65,18 @@ const getAndCalculateAllLimitUsage = async (): Promise<
 > => {
   console.log(`Fetching limits...`);
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
-  const currentTime = dayjs();
 
   console.log(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
     async (limit) => {
-      const fromInclusive = await applicationDateCalculator
+      const createdAtRange = await applicationDateCalculator
         .calculateLimitStartingApplicationDate(limit);
 
       return spendingRepository
         .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
           category: limit.categoryId || null,
           source: limit.sourceId || null,
-          createdAt: {
-            fromInclusive,
-            toExclusive: currentTime,
-          },
+          createdAt: createdAtRange,
         });
     },
   ));
