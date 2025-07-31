@@ -5,6 +5,7 @@ export const SPENDING_LIMIT_TABLE = "spending_limit";
 export enum ApplicationPeriod {
   MONTHLY = "MONTHLY",
   PAYDAY = "PAYDAY",
+  DATE2DATE = "DATE2DATE",
 }
 
 /**

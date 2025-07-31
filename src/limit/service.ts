@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
-import limitRepository, { ApplicationPeriod, ILimit } from "./repository.ts";
-import paydayConfigurationService from "../configuration/payday/service.ts";
+import limitRepository, { ILimit } from "./repository.ts";
+
+import applicationDateCalculator from "./util/applicationDateCalculator.ts";
 
 export interface ILimitCheckResult extends ILimit {
   usedValue: number;
@@ -19,19 +20,6 @@ export interface ILimitCheckResultWithCategoryAndSourceName
  */
 export const LIMIT_THRESHOLD_PERCENTAGE = 60.00;
 
-const getLimitStartingApplicationDateByPeriod = async (
-  applicationPeriod: ApplicationPeriod,
-): Promise<dayjs.Dayjs> => {
-  switch (applicationPeriod) {
-    case ApplicationPeriod.PAYDAY:
-      return dayjs((await paydayConfigurationService.getLatest()).paydayDate);
-
-    case ApplicationPeriod.MONTHLY:
-    default:
-      return dayjs().startOf("month");
-  }
-};
-
 const checkAndCalculateLimitForSpending = async (
   spending: ISpending,
 ): Promise<ILimitCheckResult[]> => {
@@ -45,11 +33,10 @@ const checkAndCalculateLimitForSpending = async (
   const currentTime = dayjs();
 
   for (const limit of limits) {
-    const { categoryId, sourceId, value, applicationPeriod } = limit;
+    const { categoryId, sourceId, value } = limit;
 
-    const fromInclusive = await getLimitStartingApplicationDateByPeriod(
-      applicationPeriod,
-    );
+    const fromInclusive = await applicationDateCalculator
+      .calculateLimitStartingApplicationDate(limit);
 
     const spendings = await spendingRepository
       .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
@@ -89,9 +76,8 @@ const getAndCalculateAllLimitUsage = async (): Promise<
   console.log(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
     async (limit) => {
-      const fromInclusive = await getLimitStartingApplicationDateByPeriod(
-        limit.applicationPeriod,
-      );
+      const fromInclusive = await applicationDateCalculator
+        .calculateLimitStartingApplicationDate(limit);
 
       return spendingRepository
         .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
