@@ -160,6 +160,8 @@ const getSpendingAmountPerCategoryWithSourceNeedSettlementCreatedAtDatetimeRange
 const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
   filter: IGetManySpendingsFilterQueryParam,
 ): Promise<ISpendingWithCategoryNameAndSourceName[]> => {
+  const descriptionSearchQuery = filter.descriptionKeywordsToVectorQuery();
+
   const spendings = await sql<ISpendingWithCategoryNameAndSourceName>`
     select
       spending.id, spending.amount, spending.description, category.name as category_name, source.name as source_name, spending.created_at
@@ -180,8 +182,10 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
       spending.created_at < ${
     filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp
-    and
-      to_tsvector('simple', spending.description) @@ to_tsquery('simple', ${filter.descriptionKeywordsToVectorQuery()})
+    and case
+      when ${descriptionSearchQuery} IS NULL OR = '' THEN true
+      else to_tsvector('simple', spending.description) @@ to_tsquery('simple', ${descriptionSearchQuery})
+    end
     order by
       spending.created_at desc,
       category.priority asc
