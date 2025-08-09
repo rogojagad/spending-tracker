@@ -20,9 +20,11 @@ export interface IGetManySpendingsFilterQueryParam {
    * becomes
    * "americano | (cafe <-> latte) | (weekend <-> takeaway <-> coffee)"
    *
-   * @returns string | null
+   * If given empty array then will return empty string
+   *
+   * @returns string
    */
-  descriptionKeywordsToVectorQuery(): string | null;
+  descriptionKeywordsToVectorQuery(): string;
 }
 
 export interface IGetManySpendingsCreatedAtRangeFilter {
@@ -71,7 +73,7 @@ export class GetManySpendingsFilterQueryParam
     });
   }
 
-  descriptionKeywordsToVectorQuery(): string | null {
+  descriptionKeywordsToVectorQuery(): string {
     return this.descriptionKeywords?.map((keyword) => {
       const splittedKeyword = keyword.split(" ");
       if (splittedKeyword.length === 1) {
@@ -79,6 +81,6 @@ export class GetManySpendingsFilterQueryParam
       }
 
       return `(${splittedKeyword.join(" <-> ")})`;
-    }).join(" | ") ?? null;
+    }).join(" | ") ?? "";
   }
 }

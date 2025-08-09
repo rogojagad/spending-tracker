@@ -183,7 +183,7 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
     filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp
     and case
-      when ${descriptionSearchQuery} IS NULL OR ${descriptionSearchQuery} = '' THEN true
+      when ${descriptionSearchQuery} = '' THEN true
       else to_tsvector('simple', spending.description) @@ to_tsquery('simple', ${descriptionSearchQuery})
     end
     order by
