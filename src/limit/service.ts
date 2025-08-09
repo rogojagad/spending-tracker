@@ -1,3 +1,4 @@
+import { GetManySpendingsFilterQueryParam } from "../spending/interface.ts";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
 import limitRepository, { ILimit } from "./repository.ts";
 
@@ -73,11 +74,12 @@ const getAndCalculateAllLimitUsage = async (): Promise<
         .calculateLimitApplicationDateRange(limit);
 
       return spendingRepository
-        .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange({
-          category: limit.categoryId || null,
-          source: limit.sourceId || null,
-          createdAt: createdAtRange,
-        });
+        .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(
+          GetManySpendingsFilterQueryParam.fromLimitAndCreatedAtRange(
+            limit,
+            createdAtRange,
+          ),
+        );
     },
   ));
 

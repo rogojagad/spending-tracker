@@ -180,6 +180,8 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
       spending.created_at < ${
     filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
   }::timestamp
+    and
+      to_tsvector('simple', spending.description) @@ to_tsquery('simple', ${filter.descriptionKeywordsToVectorQuery()})
     order by
       spending.created_at desc,
       category.priority asc
