@@ -9,7 +9,7 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
   async up(info: Info): Promise<void> {
     // create description_keywords column
     await this.client.queryArray(
-      `ALTER TABLE spending_limit ADD COLUMN description_keywords TEXT[];`,
+      `ALTER TABLE spending_limit ADD COLUMN description_keywords TEXT[] IF NOT EXISTS;`,
     );
 
     // drop the constraint that requires category_id or source_id to be not null
