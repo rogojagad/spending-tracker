@@ -3,9 +3,10 @@ import db from "../postgre.ts";
 export const SPENDING_LIMIT_TABLE = "spending_limit";
 
 export enum ApplicationPeriod {
+  DATE2DATE = "DATE2DATE",
   MONTHLY = "MONTHLY",
   PAYDAY = "PAYDAY",
-  DATE2DATE = "DATE2DATE",
+  WEEKLY = "WEEKLY",
 }
 
 /**
@@ -30,6 +31,7 @@ export interface ILimit {
   value: number;
   categoryId?: string;
   sourceId?: string;
+  descriptionKeywords?: string[];
   applicationPeriod: ApplicationPeriod;
 }
 
@@ -52,6 +54,7 @@ const getAllWithCategoryAndSourceName = async (): Promise<
       "spendingLimit.categoryId as categoryId",
       "spendingLimit.sourceId as sourceId",
       "spendingLimit.applicationPeriod as applicationPeriod",
+      "spendingLimit.descriptionKeywords as descriptionKeywords",
       "category.name as categoryName",
       "source.name as sourceName",
     ])

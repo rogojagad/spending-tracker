@@ -169,9 +169,9 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
     join
       source on source.id = spending.source_id
     where
-      (spending.category_id = COALESCE(${filter.category}, spending.category_id))
+      (spending.category_id = ${filter.category})
     and
-      (spending.source_id = COALESCE(${filter.source}, spending.source_id))
+      (spending.source_id = ${filter.source})
     and
       spending.created_at >= ${
     filter.createdAt.fromInclusive.format("YYYY-MM-DD HH:mm:ss")
