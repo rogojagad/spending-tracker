@@ -20,7 +20,7 @@ export interface IGetManySpendingsFilterQueryParam {
    * becomes
    * "americano | (cafe <-> latte) | (weekend <-> takeaway <-> coffee)"
    *
-   * If given empty array then will return empty string
+   * If given null then will return empty string
    *
    * @returns string
    */
