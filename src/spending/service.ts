@@ -15,13 +15,17 @@ interface IAmountForCategory {
   categoryName: string;
 }
 
-const getManySpendings = (
+const getManySpendings = async (
   filter: IGetManySpendingsFilterQueryParam,
 ): Promise<
   ISpendingWithCategoryNameAndSourceName[]
 > => {
-  return spendingRepository
+  console.time(`Fetching spendings...`);
+  const spendings = await spendingRepository
     .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(filter);
+  console.timeEnd(`Fetching spendings...`);
+
+  return spendings;
 };
 
 const getMonthlySpendingSummaries = async (): Promise<
