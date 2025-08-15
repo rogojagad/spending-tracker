@@ -1,4 +1,5 @@
 import db from "~/src/postgre.ts";
+import { timed } from "../utils/timed.ts";
 
 export const CATEGORY_TABLE = "category";
 
@@ -24,6 +25,9 @@ const getOneById = async (id: string): Promise<ICategory> => {
   return result;
 };
 
-const categoryRepository = { getAll, getOneById };
+const categoryRepository = timed("categoryRepository", {
+  getAll,
+  getOneById,
+});
 
 export default categoryRepository;

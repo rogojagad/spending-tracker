@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { indonesiaHolidaysMap } from "../data/holidays.ts";
 import paydayConfigurationRepository, { IPayday } from "./repository.ts";
+import { timed } from "../../utils/timed.ts";
 
 const PAYDAY_DATE = 25;
 
@@ -95,10 +96,10 @@ const getLatest = async (): Promise<IPayday> => {
   return payday;
 };
 
-const paydayConfigurationService = {
+const paydayConfigurationService = timed("paydayConfigurationService", {
   populateForThisYear,
   getAllThisYear,
   getLatest,
-};
+});
 
 export default paydayConfigurationService;

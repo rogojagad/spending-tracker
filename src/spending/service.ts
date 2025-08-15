@@ -3,6 +3,7 @@ import spendingRepository, {
 } from "~/src/spending/repository.ts";
 import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
+import { timed } from "../utils/timed.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -61,6 +62,9 @@ const getMonthlySpendingSummaries = async (): Promise<
   }).toArray();
 };
 
-const spendingService = { getManySpendings, getMonthlySpendingSummaries };
+const spendingService = timed("spendingService", {
+  getManySpendings,
+  getMonthlySpendingSummaries,
+});
 
 export default spendingService;

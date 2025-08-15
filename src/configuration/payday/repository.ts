@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import db from "../../postgre.ts";
 import { sql } from "kysely";
+import { timed } from "../../utils/timed.ts";
 
 export interface IPayday {
   id?: string;
@@ -56,10 +57,10 @@ const getPaydaysForThisYear = async (): Promise<IPayday[]> => {
   );
 };
 
-const paydayConfigurationRepository = {
+const paydayConfigurationRepository = timed("paydayConfigurationRepository", {
   insertMany,
   getPaydaysForThisYear,
   getLatest,
-};
+});
 
 export default paydayConfigurationRepository;
