@@ -1,5 +1,4 @@
 import db from "~/src/postgre.ts";
-import { timed } from "../utils/timed.ts";
 
 export const SOURCE_TABLE = "source";
 
@@ -28,10 +27,10 @@ const getOneById = async (id: string): Promise<ISource> => {
   return result;
 };
 
-const sourceCategory = timed("sourceCategory", {
+const sourceCategory = {
   getAll,
   getOneById,
   getAllActive,
-});
+};
 
 export default sourceCategory;

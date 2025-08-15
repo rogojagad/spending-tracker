@@ -3,7 +3,6 @@ import spendingRepository, { ISpending } from "../spending/repository.ts";
 import limitRepository, { ILimit } from "./repository.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
-import { timed } from "../utils/timed.ts";
 
 export interface ILimitCheckResult extends ILimit {
   usedValue: number;
@@ -107,9 +106,9 @@ const getAndCalculateAllLimitUsage = async (): Promise<
   });
 };
 
-const limitService = timed("limitService", {
+const limitService = {
   checkAndCalculateLimitForSpending,
   getAndCalculateAllLimitUsage,
-});
+};
 
 export default limitService;

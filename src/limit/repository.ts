@@ -1,5 +1,4 @@
 import db from "../postgre.ts";
-import { timed } from "../utils/timed.ts";
 
 export const SPENDING_LIMIT_TABLE = "spending_limit";
 
@@ -88,9 +87,9 @@ const getManyAppliedLimitsByCategoryIdOrSourceId = async (
   return result;
 };
 
-const limitRepository = timed("limitRepository", {
+const limitRepository = {
   getAllWithCategoryAndSourceName,
   getManyAppliedLimitsByCategoryIdOrSourceId,
-});
+};
 
 export default limitRepository;

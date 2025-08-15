@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 import db from "~/src/postgre.ts";
 import { sql } from "kysely";
 import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
-import { timed } from "../utils/timed.ts";
 
 export const SPENDING_TABLE = "spending";
 
@@ -256,7 +255,7 @@ const getTodaySpendingAmountToSettlePerSourceAndCategory = async (): Promise<
   );
 };
 
-const spendingRepository = timed("spendingRepository", {
+const spendingRepository = {
   createOneSpending,
   getAll,
   getOneById,
@@ -266,6 +265,6 @@ const spendingRepository = timed("spendingRepository", {
   getTodaySpendingAmountToSettlePerSourceAndCategory,
   getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
   getSpendingSummariesGroupByMonthAndCategoryName,
-});
+};
 
 export default spendingRepository;
