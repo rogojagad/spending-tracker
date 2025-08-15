@@ -21,10 +21,8 @@ const getManySpendings = async (
 ): Promise<
   ISpendingWithCategoryNameAndSourceName[]
 > => {
-  console.time(`Fetching spendings...`);
   const spendings = await spendingRepository
     .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(filter);
-  console.timeEnd(`Fetching spendings...`);
 
   return spendings;
 };

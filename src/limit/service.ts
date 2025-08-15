@@ -69,11 +69,8 @@ const checkAndCalculateLimitForSpending = async (
 const getAndCalculateAllLimitUsage = async (): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
-  console.time(`Fetching limits...`);
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
-  console.timeEnd(`Fetching limits...`);
 
-  console.time(`Fetching spendings for each limit...`);
   const spendingsForEachLimit = await Promise.all(limits.map(
     async (limit) => {
       const createdAtRange = await applicationDateCalculator
@@ -88,7 +85,6 @@ const getAndCalculateAllLimitUsage = async (): Promise<
         );
     },
   ));
-  console.timeEnd(`Fetching spendings for each limit...`);
 
   /**
    * `Promise.all` guarantee the resulting array item's order is the same as the promise passed, regardless of the completion order.
