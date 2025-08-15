@@ -29,7 +29,6 @@ const DB_HOST = Deno.env.get("POSTGRESQL_HOST");
 if (!DB_HOST) throw new Error("DB host unconfigured");
 
 const DB_URL = `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/postgres`;
-console.log(DB_URL);
 
 export const postgresInstance = postgres(DB_URL, {
   max: 3,
