@@ -18,8 +18,9 @@ const app = new Hono();
 const bot = new TelegramBot();
 
 const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
-if (shouldUseWebhookMode) bot.start();
-else app.use(webhookCallback(bot.getClientInstance(), "hono"));
+if (shouldUseWebhookMode) {
+  app.use(webhookCallback(bot.getClientInstance(), "hono"));
+} else bot.start();
 
 /** Middleware */
 app.use(logger());
