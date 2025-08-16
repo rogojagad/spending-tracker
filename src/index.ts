@@ -7,7 +7,9 @@ import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
+import botController from "./bot/controller.ts";
 import TelegramBot from "~/src/bot/client.ts";
+import { webhookCallback } from "grammy";
 
 /** HTTP Server */
 const app = new Hono();
@@ -15,7 +17,9 @@ const app = new Hono();
 /** Telegram Bot  */
 const bot = new TelegramBot();
 
-bot.start();
+const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
+if (shouldUseWebhookMode) bot.start();
+else app.use(webhookCallback(bot.getClientInstance(), "hono"));
 
 /** Middleware */
 app.use(logger());
@@ -38,6 +42,7 @@ app.get("/ping", (c: Context) => {
   return c.json({ data: "pong" });
 });
 
+app.route("/bot", botController);
 app.route("/spendings", spendingController);
 app.route("/categories", categoryController);
 app.route("/sources", sourceController);
