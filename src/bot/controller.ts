@@ -10,7 +10,7 @@ app.use(cors());
 
 app.get("/messages", (c: Context) => {
   console.info(JSON.stringify(c.req, null, 2));
-  return c.json({});
+  return c.json();
 });
 
 export default app;
