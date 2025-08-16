@@ -14,14 +14,6 @@ import { webhookCallback } from "grammy";
 /** HTTP Server */
 const app = new Hono();
 
-/** Telegram Bot  */
-const bot = new TelegramBot();
-
-const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
-if (shouldUseWebhookMode) {
-  app.use(webhookCallback(bot.getClientInstance(), "hono"));
-} else bot.start();
-
 /** Middleware */
 app.use(logger());
 app.use(cors());
@@ -50,6 +42,16 @@ app.route("/sources", sourceController);
 app.route("/limits", limitController);
 app.route("/configs", configurationController);
 
+/** Telegram Bot  */
+const bot = new TelegramBot();
+
+const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
+if (shouldUseWebhookMode) {
+  app.use(webhookCallback(bot.getClientInstance(), "hono"));
+} else bot.start();
+
+/** Cron */
 cron.register(bot);
 
+/** App Serve */
 Deno.serve({ port: 8080 }, app.fetch);
