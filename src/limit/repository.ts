@@ -1,4 +1,6 @@
+import { sql } from "kysely";
 import db from "../postgre.ts";
+import { ISpending } from "../spending/repository.ts";
 
 export const SPENDING_LIMIT_TABLE = "spending_limit";
 
@@ -40,6 +42,28 @@ interface ILimitWithCategoryAndSourceName extends ILimit {
   sourceName?: string | null;
 }
 
+export class GetLimitsFilter {
+  categoryId?: string;
+  sourceId?: string;
+  description?: string;
+
+  constructor(
+    param: { categoryId?: string; sourceId?: string; description?: string },
+  ) {
+    this.categoryId = param.categoryId;
+    this.sourceId = param.sourceId;
+    this.description = param.description;
+  }
+
+  static fromSpending(spending: ISpending): GetLimitsFilter {
+    return new GetLimitsFilter({
+      categoryId: spending.categoryId,
+      sourceId: spending.sourceId,
+      description: spending.description,
+    });
+  }
+}
+
 const getAllWithCategoryAndSourceName = async (): Promise<
   ILimitWithCategoryAndSourceName[]
 > => {
@@ -63,33 +87,38 @@ const getAllWithCategoryAndSourceName = async (): Promise<
   return result;
 };
 
-const getManyAppliedLimitsByCategoryIdOrSourceId = async (
-  categoryId: string,
-  sourceId: string,
+const getManyLimits = async (
+  filter: GetLimitsFilter,
 ): Promise<ILimit[]> => {
-  const result = await db.selectFrom("spendingLimit").selectAll().where((eb) =>
-    eb.or([
-      eb.and([
-        eb("categoryId", "=", categoryId),
-        eb("sourceId", "=", sourceId),
-      ]),
-      eb.and([
-        eb("categoryId", "=", categoryId),
-        eb("sourceId", "is", null),
-      ]),
-      eb.and([
-        eb("categoryId", "is", null),
-        eb("sourceId", "=", sourceId),
-      ]),
-    ])
-  ).execute();
+  const result = await sql<ILimit>`
+    SELECT * FROM spending_limit
+    WHERE (category_id = COALESCE(${filter.categoryId}, category_id))
+    AND (source_id = COALESCE(${filter.sourceId}), source_id)
+    AND (
+    l.description_keywords IS NULL 
+    OR array_length(l.description_keywords, 1) IS NULL
+    OR to_tsvector('simple', $3) @@ to_tsquery('simple', 
+         array_to_string(
+           array(
+             SELECT CASE 
+               WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
+               ELSE keyword 
+             END
+             FROM unnest(l.description_keywords) AS keyword
+           ), 
+           ' | '
+         )
+       )
+  )
+  `
+    .execute(db);
 
-  return result;
+  return result.rows;
 };
 
 const limitRepository = {
   getAllWithCategoryAndSourceName,
-  getManyAppliedLimitsByCategoryIdOrSourceId,
+  getManyLimits,
 };
 
 export default limitRepository;

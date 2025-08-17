@@ -56,7 +56,9 @@ export async function addNewSpending(
     } from ${source!.name}`,
   );
 
-  const limitsNeedAlert = await limitService.getLimitsExceedThreshold();
+  const limitsNeedAlert = await limitService.getLimitsExceededBySpending(
+    spending,
+  );
 
   if (!limitsNeedAlert.length) return;
 

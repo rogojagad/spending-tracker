@@ -1,6 +1,6 @@
 import { GetManySpendingsFilterQueryParam } from "../spending/interface.ts";
-import spendingRepository from "../spending/repository.ts";
-import limitRepository, { ILimit } from "./repository.ts";
+import spendingRepository, { ISpending } from "../spending/repository.ts";
+import limitRepository, { GetLimitsFilter, ILimit } from "./repository.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
 
@@ -20,12 +20,47 @@ export interface ILimitCheckResultWithCategoryAndSourceName
  */
 export const LIMIT_THRESHOLD_PERCENTAGE = 60.00;
 
-const getLimitsExceedThreshold = async (): Promise<
+const getLimitsExceededBySpending = async (spending: ISpending): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
-  return (await getAndCalculateAllLimitUsage()).filter((limit) => {
-    return LIMIT_THRESHOLD_PERCENTAGE <= limit.usedPercentage;
-  });
+  const checkResults: ILimitCheckResultWithCategoryAndSourceName[] = [];
+  const limits = await limitRepository.getManyLimits(
+    GetLimitsFilter.fromSpending(spending),
+  );
+
+  for (const limit of limits) {
+    const { categoryId, sourceId, value } = limit;
+
+    const createdAtRange = await applicationDateCalculator
+      .calculateLimitApplicationDateRange(limit);
+
+    const spendings = await spendingRepository
+      .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(
+        new GetManySpendingsFilterQueryParam({
+          category: categoryId || null,
+          source: sourceId || null,
+          descriptionKeywords: null,
+          createdAtFromInclusive: createdAtRange.fromInclusive,
+          createdAtToExclusive: createdAtRange.toExclusive,
+        }),
+      );
+
+    const usedValue = spendings.reduce((prev, current) => {
+      return prev + current.amount;
+    }, 0);
+
+    const usedPercentage = (usedValue / value) * 100;
+
+    if (usedPercentage >= LIMIT_THRESHOLD_PERCENTAGE) {
+      checkResults.push({
+        ...limit,
+        usedValue,
+        usedPercentage,
+      });
+    }
+  }
+
+  return checkResults;
 };
 
 const getAndCalculateAllLimitUsage = async (): Promise<
@@ -70,7 +105,7 @@ const getAndCalculateAllLimitUsage = async (): Promise<
 };
 
 const limitService = {
-  getLimitsExceedThreshold,
+  getLimitsExceededBySpending,
   getAndCalculateAllLimitUsage,
 };
 
