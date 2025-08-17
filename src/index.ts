@@ -7,7 +7,6 @@ import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
-import botController from "./bot/controller.ts";
 import TelegramBot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
 
@@ -35,7 +34,6 @@ app.get("/ping", (c: Context) => {
   return c.json({ data: "pong" });
 });
 
-app.route("/bot", botController);
 app.route("/spendings", spendingController);
 app.route("/categories", categoryController);
 app.route("/sources", sourceController);
