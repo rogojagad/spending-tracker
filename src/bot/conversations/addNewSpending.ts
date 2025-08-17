@@ -56,9 +56,7 @@ export async function addNewSpending(
     } from ${source!.name}`,
   );
 
-  const limitsNeedAlert = await limitService.checkAndCalculateLimitForSpending(
-    spending,
-  );
+  const limitsNeedAlert = await limitService.getLimitsExceedThreshold();
 
   if (!limitsNeedAlert.length) return;
 
