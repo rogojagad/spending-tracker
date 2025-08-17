@@ -24,7 +24,7 @@ const getLimitsExceedThreshold = async (): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
   return (await getAndCalculateAllLimitUsage()).filter((limit) => {
-    return LIMIT_THRESHOLD_PERCENTAGE >= limit.usedPercentage;
+    return LIMIT_THRESHOLD_PERCENTAGE <= limit.usedPercentage;
   });
 };
 
