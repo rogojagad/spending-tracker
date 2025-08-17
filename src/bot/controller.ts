@@ -8,7 +8,7 @@ const app = new Hono();
 app.use(logger());
 app.use(cors());
 
-app.get("/messages", (c: Context) => {
+app.post("/messages", (c: Context) => {
   console.info(JSON.stringify(c.req, null, 2));
   return c.json({ data: "OK" });
 });
