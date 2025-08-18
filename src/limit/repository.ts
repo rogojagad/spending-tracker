@@ -93,23 +93,23 @@ const getManyLimits = async (
   const result = await sql<ILimit>`
     SELECT * FROM spending_limit
     WHERE (category_id = COALESCE(${filter.categoryId}, category_id))
-    AND (source_id = COALESCE(${filter.sourceId}), source_id)
+    AND (source_id = COALESCE(${filter.sourceId}, source_id))
     AND (
-    description_keywords IS NULL 
-    OR array_length(description_keywords, 1) IS NULL
-    OR to_tsvector('simple', ${filter.description}) @@ to_tsquery('simple', 
-         array_to_string(
-           array(
-             SELECT CASE 
-               WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
-               ELSE keyword 
-             END
-             FROM unnest(description_keywords) AS keyword
-           ), 
+      description_keywords IS NULL 
+      OR array_length(description_keywords, 1) IS NULL
+      OR to_tsvector('simple', ${filter.description}::text) @@ to_tsquery('simple', 
+        array_to_string(
+          array(
+            SELECT CASE 
+              WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
+              ELSE keyword 
+            END
+            FROM unnest(description_keywords) AS keyword
+          ), 
            ' | '
-         )
-       )
-  )
+        )
+      )
+    )
   `
     .execute(db);
 
