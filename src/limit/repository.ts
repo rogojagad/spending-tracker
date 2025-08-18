@@ -95,16 +95,16 @@ const getManyLimits = async (
     WHERE (category_id = COALESCE(${filter.categoryId}, category_id))
     AND (source_id = COALESCE(${filter.sourceId}), source_id)
     AND (
-    l.description_keywords IS NULL 
-    OR array_length(l.description_keywords, 1) IS NULL
-    OR to_tsvector('simple', $3) @@ to_tsquery('simple', 
+    description_keywords IS NULL 
+    OR array_length(description_keywords, 1) IS NULL
+    OR to_tsvector('simple', ${filter.description}) @@ to_tsquery('simple', 
          array_to_string(
            array(
              SELECT CASE 
                WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
                ELSE keyword 
              END
-             FROM unnest(l.description_keywords) AS keyword
+             FROM unnest(description_keywords) AS keyword
            ), 
            ' | '
          )
