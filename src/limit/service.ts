@@ -1,6 +1,6 @@
 import { GetManySpendingsFilterQueryParam } from "../spending/interface.ts";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
-import limitRepository, { GetLimitsFilter, ILimit } from "./repository.ts";
+import limitRepository, { ILimit } from "./repository.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
 
@@ -20,13 +20,43 @@ export interface ILimitCheckResultWithCategoryAndSourceName
  */
 export const LIMIT_THRESHOLD_PERCENTAGE = 60.00;
 
+/*
+ * Example limit configurations:
+ * - Kopi Mahal (source: kartu kredit, desc: kopi)
+ * - Kopi Murah (category: secondary, desc: kopi)
+ * - Kopi Kantor (source: bank A account, category: primary, desc: kopi)
+ *
+ * Example spending: "kopi, category: secondary, source: kartu kredit"
+ * - should match "Kopi Mahal" limit only -- match on the source
+ *
+ * Example spending: "kopi, category: secondary, source: bank A account"
+ * - should match "Kopi Murah" limit only -- match on the category
+ *
+ * Example spending: "kopi, category: primary, source: bank A account"
+ * - should match "Kopi Kantor" limit only -- match on the category and source
+ */
+
 const getLimitsExceededBySpending = async (spending: ISpending): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
   const checkResults: ILimitCheckResultWithCategoryAndSourceName[] = [];
-  const limits = await limitRepository.getManyLimits(
-    GetLimitsFilter.fromSpending(spending),
-  );
+  const limits = (await limitRepository.getAppliedLimitsByKeywords(
+    spending.description,
+  )).filter((limit) => {
+    // Only apply limit if both source and category match
+    // If limit has only sourceId, check only sourceId
+    // If limit has only categoryId, check only categoryId
+    // If limit has both, check both
+    if (limit.sourceId && limit.categoryId) {
+      return limit.sourceId === spending.sourceId &&
+        limit.categoryId === spending.categoryId;
+    } else if (limit.sourceId) {
+      return limit.sourceId === spending.sourceId;
+    } else if (limit.categoryId) {
+      return limit.categoryId === spending.categoryId;
+    }
+    return false;
+  });
 
   for (const limit of limits) {
     const { categoryId, sourceId, value } = limit;

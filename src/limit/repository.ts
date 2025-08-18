@@ -42,28 +42,6 @@ interface ILimitWithCategoryAndSourceName extends ILimit {
   sourceName?: string | null;
 }
 
-export class GetLimitsFilter {
-  categoryId?: string;
-  sourceId?: string;
-  description?: string;
-
-  constructor(
-    param: { categoryId?: string; sourceId?: string; description?: string },
-  ) {
-    this.categoryId = param.categoryId;
-    this.sourceId = param.sourceId;
-    this.description = param.description;
-  }
-
-  static fromSpending(spending: ISpending): GetLimitsFilter {
-    return new GetLimitsFilter({
-      categoryId: spending.categoryId,
-      sourceId: spending.sourceId,
-      description: spending.description,
-    });
-  }
-}
-
 const getAllWithCategoryAndSourceName = async (): Promise<
   ILimitWithCategoryAndSourceName[]
 > => {
@@ -87,29 +65,33 @@ const getAllWithCategoryAndSourceName = async (): Promise<
   return result;
 };
 
-const getManyLimits = async (
-  filter: GetLimitsFilter,
+const getAppliedLimitsByKeywords = async (
+  keywords: string,
 ): Promise<ILimit[]> => {
   const result = await sql<ILimit>`
     SELECT * FROM spending_limit
-    WHERE (category_id = COALESCE(${filter.categoryId}, category_id))
-    AND (source_id = COALESCE(${filter.sourceId}, source_id))
-    AND (
-      description_keywords IS NULL 
-      OR array_length(description_keywords, 1) IS NULL
-      OR to_tsvector('simple', ${filter.description}::text) @@ to_tsquery('simple', 
-        array_to_string(
-          array(
-            SELECT CASE 
-              WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
-              ELSE keyword 
-            END
-            FROM unnest(description_keywords) AS keyword
-          ), 
-           ' | '
+    WHERE 
+    CASE 
+      WHEN ${keywords} = '' IS true THEN true
+      WHEN ${keywords} = '' IS NULL THEN true
+    ELSE
+      (
+        description_keywords IS NULL 
+        OR array_length(description_keywords, 1) IS NULL
+        OR to_tsvector('simple', ${keywords}::text) @@ to_tsquery('simple', 
+          array_to_string(
+            array(
+              SELECT CASE 
+                WHEN keyword LIKE '% %' THEN '(' || replace(keyword, ' ', ' <-> ') || ')'
+                ELSE keyword 
+              END
+              FROM unnest(description_keywords) AS keyword
+            ), 
+            ' | '
+          )
         )
       )
-    )
+    END
   `
     .execute(db);
 
@@ -118,7 +100,7 @@ const getManyLimits = async (
 
 const limitRepository = {
   getAllWithCategoryAndSourceName,
-  getManyLimits,
+  getAppliedLimitsByKeywords,
 };
 
 export default limitRepository;
