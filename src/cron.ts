@@ -2,7 +2,9 @@ import messageFormatter from "~/src/bot/messageFormatter.ts";
 import TelegramBot from "~/src/bot/client.ts";
 import dayjs from "dayjs";
 import spendingRepository from "~/src/spending/repository.ts";
-import spreadsheetRepository from "~/src/spreadsheet/repository.ts";
+import spreadsheetService from "./spreadsheet/service.ts";
+import limitService from "./limit/service.ts";
+import limitSnapshotRepository from "./limitSnapshot/repository.ts";
 
 const register = (bot: TelegramBot): void => {
   /** 23:59 PM JKT daily */
@@ -27,24 +29,47 @@ const register = (bot: TelegramBot): void => {
 
     const isEom = dayjs().daysInMonth() === dayjs().get("date");
     if (isEom) {
-      const spendingSummaryThisMonth = await spendingRepository
-        .getThisMonthSpendingSummary();
-
-      await bot.sendMessageToRecipient(
-        messageFormatter.formatMonthlyReport(spendingSummaryThisMonth),
-      );
-
-      const thisMonthSpendings = await spendingRepository
-        .getAllSpendingsThisMonth();
-
-      const sheetTitle = dayjs().format("MMMM-YYYY");
-      await spreadsheetRepository.createNewSheet(sheetTitle);
-      await spreadsheetRepository.recordSpendings(
-        sheetTitle,
-        thisMonthSpendings,
-      );
+      await Promise.all([
+        await sendMonthlySummary(bot),
+        await snapshotSpendingsToSpreadsheet(),
+        await snapshotLimitUsage(),
+      ]); // can be done in concurrency
     }
   });
+};
+
+const sendMonthlySummary = async (bot: TelegramBot): Promise<void> => {
+  const spendingSummaryThisMonth = await spendingRepository
+    .getThisMonthSpendingSummary();
+  await bot.sendMessageToRecipient(
+    messageFormatter.formatMonthlyReport(spendingSummaryThisMonth),
+  );
+};
+
+const snapshotSpendingsToSpreadsheet = async (): Promise<void> => {
+  const thisMonthSpendings = await spendingRepository
+    .getAllSpendingsThisMonth();
+  const sheetTitle = dayjs().format("MMMM-YYYY");
+  await spreadsheetService.recordSpendingsOnSpreadsheet(
+    sheetTitle,
+    thisMonthSpendings,
+  );
+};
+
+const snapshotLimitUsage = async (): Promise<void> => {
+  const limitUsage = await limitService.getAndCalculateAllLimitUsage();
+  await Promise.all(limitUsage.map((limitUsage) => {
+    limitSnapshotRepository.createOne({
+      name: limitUsage.name,
+      value: limitUsage.value,
+      categoryId: limitUsage.categoryId,
+      sourceId: limitUsage.sourceId,
+      descriptionKeywords: limitUsage.descriptionKeywords,
+      applicationPeriod: limitUsage.applicationPeriod,
+      usedValue: limitUsage.usedValue,
+      usedPercentage: limitUsage.usedPercentage,
+    });
+  }));
 };
 
 export default { register };
