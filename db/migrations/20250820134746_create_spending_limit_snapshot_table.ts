@@ -17,7 +17,7 @@ export default class extends AbstractMigration<ClientPostgreSQL> {
             used_value INTEGER NOT NULL,
             used_percentage INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );`,
     );
   }
