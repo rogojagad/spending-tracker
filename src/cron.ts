@@ -59,16 +59,7 @@ const snapshotSpendingsToSpreadsheet = async (): Promise<void> => {
 const snapshotLimitUsage = async (): Promise<void> => {
   const limitUsage = await limitService.getAndCalculateAllLimitUsage();
   await Promise.all(limitUsage.map((limitUsage) => {
-    limitSnapshotRepository.createOne({
-      name: limitUsage.name,
-      value: limitUsage.value,
-      categoryId: limitUsage.categoryId,
-      sourceId: limitUsage.sourceId,
-      descriptionKeywords: limitUsage.descriptionKeywords,
-      applicationPeriod: limitUsage.applicationPeriod,
-      usedValue: limitUsage.usedValue,
-      usedPercentage: limitUsage.usedPercentage,
-    });
+    return limitSnapshotRepository.createOne(limitUsage);
   }));
 };
 
