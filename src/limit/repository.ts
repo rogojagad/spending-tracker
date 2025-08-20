@@ -1,8 +1,7 @@
 import { sql } from "kysely";
 import db from "../postgre.ts";
-import { ISpending } from "../spending/repository.ts";
 
-export const SPENDING_LIMIT_TABLE = "spending_limit";
+export const SPENDING_LIMIT_TABLE = "spendingLimit";
 
 export enum ApplicationPeriod {
   DATE2DATE = "DATE2DATE",
