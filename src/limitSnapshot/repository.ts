@@ -1,7 +1,7 @@
 import { ApplicationPeriod } from "../limit/repository.ts";
 import db from "../postgre.ts";
 
-export const LIMIT_SNAPSHOT_TABLE = "limitSnapshot";
+export const SPENDING_LIMIT_SNAPSHOT_TABLE = "spendingLimitSnapshot";
 
 export interface ILimitSnapshot {
   // OG limit fields
@@ -21,7 +21,7 @@ export interface ILimitSnapshot {
 const createOne = async (
   limitSnapshot: ILimitSnapshot,
 ): Promise<ILimitSnapshot> => {
-  const result = await db.insertInto(LIMIT_SNAPSHOT_TABLE)
+  const result = await db.insertInto(SPENDING_LIMIT_SNAPSHOT_TABLE)
     .values(limitSnapshot)
     .returningAll()
     .executeTakeFirst();

@@ -15,7 +15,7 @@ interface IDatabase {
   source: ISource;
   spendingLimit: ILimit;
   payday: IPayday;
-  limitSnapshot: ILimitSnapshot;
+  spendingLimitSnapshot: ILimitSnapshot;
 }
 
 const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
