@@ -53,6 +53,7 @@ app.route("/configs", configurationController);
 const bot = new TelegramBot();
 
 const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
+console.info(`Should use webhook mode: ${shouldUseWebhookMode}`);
 if (shouldUseWebhookMode) {
   app.use(webhookCallback(bot.getClientInstance(), "hono"));
 } else bot.start();
