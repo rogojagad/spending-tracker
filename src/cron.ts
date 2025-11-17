@@ -30,10 +30,10 @@ const register = (bot: TelegramBot): void => {
     const isEom = dayjs().daysInMonth() === dayjs().get("date");
     if (isEom) {
       await Promise.all([
-        await sendMonthlySummary(bot),
-        await snapshotSpendingsToSpreadsheet(),
-        await snapshotLimitUsage(),
-      ]); // can be done in concurrency
+        sendMonthlySummary(bot),
+        snapshotSpendingsToSpreadsheet(),
+        snapshotLimitUsage(),
+      ]); // can be done concurrently
     }
   });
 };
@@ -59,7 +59,13 @@ const snapshotSpendingsToSpreadsheet = async (): Promise<void> => {
 const snapshotLimitUsage = async (): Promise<void> => {
   const limitUsage = await limitService.getAndCalculateAllLimitUsage();
   await Promise.all(limitUsage.map((limitUsage) => {
-    return limitSnapshotRepository.createOne(limitUsage);
+    // Strip extra fields (categoryName, sourceName) that aren't in ILimitSnapshot
+    const {
+      categoryName: _categoryName,
+      sourceName: _sourceName,
+      ...limitSnapshot
+    } = limitUsage;
+    return limitSnapshotRepository.createOne(limitSnapshot);
   }));
 };
 
