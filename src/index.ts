@@ -7,7 +7,7 @@ import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
-import TelegramBot from "~/src/bot/client.ts";
+import bot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
 
 /** HTTP Server */
@@ -50,7 +50,7 @@ app.route("/configs", configurationController);
  *
  * Causing regular HTTP request from API endpoints to always be rejected.(smh!)
  */
-const bot = new TelegramBot();
+// const bot = new TelegramBot();
 
 const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
 console.info(`Should use webhook mode: ${shouldUseWebhookMode}`);

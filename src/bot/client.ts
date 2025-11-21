@@ -22,7 +22,7 @@ type BotClient = Bot<MyContext>;
  * - register all required middlewares and event listeners
  * - sending message from app to user
  */
-export default class TelegramBot {
+class TelegramBot {
   private bot: BotClient;
   private recipientId: string;
   private conversationHandlerRegistrar = new ConversationHandlerRegistrar();
@@ -102,3 +102,5 @@ class ConversationHandlerRegistrar {
     });
   }
 }
+
+export default new TelegramBot();
