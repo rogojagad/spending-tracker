@@ -7,6 +7,7 @@ import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
+import jobController from "./job/controller.ts";
 import bot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
 
@@ -39,6 +40,7 @@ app.route("/categories", categoryController);
 app.route("/sources", sourceController);
 app.route("/limits", limitController);
 app.route("/configs", configurationController);
+app.route("/jobs", jobController);
 
 /**
  * Telegram Bot
