@@ -2,7 +2,6 @@ import { cors, logger } from "@hono/middleware";
 import { generateToken, validatePassword } from "~/src/middleware.ts";
 import { type Context, Hono } from "@hono/hono";
 import categoryController from "./category/controller.ts";
-import cron from "~/src/cron.ts";
 import limitController from "./limit/controller.ts";
 import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
@@ -59,9 +58,6 @@ console.info(`Should use webhook mode: ${shouldUseWebhookMode}`);
 if (shouldUseWebhookMode) {
   app.use(webhookCallback(bot.getClientInstance(), "hono"));
 } else bot.start();
-
-/** Cron */
-cron.register(bot);
 
 /** App Serve */
 Deno.serve({ port: 8080 }, app.fetch);
