@@ -31,6 +31,7 @@ app.post("/auth", async (c: Context) => {
 });
 
 app.get("/ping", (c: Context) => {
+  console.log(Deno.version);
   return c.json({ data: "pong" });
 });
 
