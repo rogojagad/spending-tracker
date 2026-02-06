@@ -1,0 +1,20 @@
+meta {
+  name: Run Monthly Limit Usage Snapshot
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{BASE_URL}}/jobs/eod/end-of-month?name=EOM_SNAPSHOT_LIMIT_USAGE
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: EOM_SNAPSHOT_LIMIT_USAGE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

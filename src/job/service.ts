@@ -75,6 +75,7 @@ const jobService = {
   sendDailySummary,
   sendDailySettlementReminderIfAny,
   doEndOfMonthReconciliationIfApplied,
+  snapshotLimitUsage,
 };
 
 export default jobService;

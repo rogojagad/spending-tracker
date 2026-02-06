@@ -1,7 +1,7 @@
-import { Hono } from "@hono/hono";
+import { type Context, Hono } from "@hono/hono";
 import { cors, logger } from "@hono/middleware";
-import { Context } from "node:vm";
 import jobService from "./service.ts";
+import { JobType } from "./enum.ts";
 
 const app = new Hono();
 
@@ -18,7 +18,16 @@ app.post("/eod", async (c: Context) => {
 });
 
 app.post("/eod/end-of-month", async (c: Context) => {
-  console.log(c);
+  const { name } = c.req.query();
+
+  switch (name) {
+    case JobType.EOM_SNAPSHOT_LIMIT_USAGE:
+      await jobService.snapshotLimitUsage();
+      break;
+
+    default:
+      break;
+  }
 });
 
 export default app;
