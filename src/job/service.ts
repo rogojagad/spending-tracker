@@ -72,7 +72,7 @@ const snapshotLimitUsage = async (): Promise<void> => {
 
     return limitSnapshotRepository.createOne(limitSnapshot).then(
       (limitSnapshot: ILimitSnapshot) => {
-        console.log(`Limit ${limitSnapshot.name} snapshotted...}`);
+        console.log(`Limit ${limitSnapshot.name} snapshotted...`);
       },
     );
   }));
