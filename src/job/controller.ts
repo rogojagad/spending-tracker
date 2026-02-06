@@ -17,4 +17,8 @@ app.post("/eod", async (c: Context) => {
   return c.json({});
 });
 
+app.post("/eod/end-of-month", async (c: Context) => {
+  console.log(c);
+});
+
 export default app;
