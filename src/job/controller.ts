@@ -29,6 +29,8 @@ app.post("/eod/end-of-month", auth, async (c: Context) => {
     default:
       break;
   }
+
+  return c.json({});
 });
 
 export default app;

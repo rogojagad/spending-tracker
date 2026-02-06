@@ -4,7 +4,9 @@ import messageFormatter from "../bot/messageFormatter.ts";
 import dayjs from "dayjs";
 import spreadsheetService from "../spreadsheet/service.ts";
 import limitService from "../limit/service.ts";
-import limitSnapshotRepository from "../limitSnapshot/repository.ts";
+import limitSnapshotRepository, {
+  ILimitSnapshot,
+} from "../limitSnapshot/repository.ts";
 
 const sendDailySummary = async (): Promise<void> => {
   const todaySpendingSummary = await spendingRepository
@@ -67,7 +69,12 @@ const snapshotLimitUsage = async (): Promise<void> => {
       sourceName: _sourceName,
       ...limitSnapshot
     } = limitUsage;
-    return limitSnapshotRepository.createOne(limitSnapshot);
+
+    return limitSnapshotRepository.createOne(limitSnapshot).then(
+      (limitSnapshot: ILimitSnapshot) => {
+        console.log(`Limit ${limitSnapshot.name} snapshotted...}`);
+      },
+    );
   }));
 };
 
