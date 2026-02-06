@@ -26,4 +26,20 @@ app.get("/paydays/latest", auth, async (c: Context) => {
   return c.json(paydays);
 });
 
+app.get("secrets/db", auth, async (c: Context) => {
+  const DB_PASSWORD = Deno.env.get("POSTGRESQL_PASSWORD");
+
+  if (!DB_PASSWORD) throw new Error("DB password unconfigured");
+
+  const DB_USERNAME = Deno.env.get("POSTGRESQL_USERNAME");
+
+  if (!DB_USERNAME) throw new Error("DB username unconfigured");
+
+  const DB_HOST = Deno.env.get("POSTGRESQL_HOST");
+
+  if (!DB_HOST) throw new Error("DB host unconfigured");
+
+  return c.json({ DB_PASSWORD, DB_USERNAME, DB_HOST });
+});
+
 export default app;

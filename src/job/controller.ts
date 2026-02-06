@@ -2,6 +2,7 @@ import { type Context, Hono } from "@hono/hono";
 import { cors, logger } from "@hono/middleware";
 import jobService from "./service.ts";
 import { JobType } from "./enum.ts";
+import { auth } from "../middleware.ts";
 
 const app = new Hono();
 
@@ -17,7 +18,7 @@ app.post("/eod", async (c: Context) => {
   return c.json({});
 });
 
-app.post("/eod/end-of-month", async (c: Context) => {
+app.post("/eod/end-of-month", auth, async (c: Context) => {
   const { name } = c.req.query();
 
   switch (name) {
