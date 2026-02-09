@@ -9,6 +9,7 @@ import configurationController from "./configuration/controller.ts";
 import jobController from "./job/controller.ts";
 import bot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
+import cron from "./cron.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -62,3 +63,6 @@ if (shouldUseWebhookMode) {
 
 /** App Serve */
 Deno.serve({ port: 8080 }, app.fetch);
+
+/** Cron */
+cron.register();
