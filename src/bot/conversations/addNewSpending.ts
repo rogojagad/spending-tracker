@@ -72,12 +72,13 @@ async function getSpendingCategory(
   ctx: MyContext,
   conversation: MyConversation,
 ): Promise<string> {
-  const categoriesButtonRow = categories.map((category) =>
-    InlineKeyboard.text(category.name, category.id)
+  const inlineKeyboard = new InlineKeyboard();
+  categories.forEach((category) =>
+    inlineKeyboard.text(category.name, category.id).row()
   );
 
   await ctx.reply("Please select spending category", {
-    reply_markup: InlineKeyboard.from([categoriesButtonRow]),
+    reply_markup: inlineKeyboard,
   });
 
   const categoryCallbackQuery = await conversation.waitFor(
