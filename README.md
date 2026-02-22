@@ -31,6 +31,16 @@ To create new migration file, run following.
 It is troublesome to use CLI to create migrations. Because I can't make
 convenient Deno task accepting user params at the moment. Note for improvement.
 
+Please follow following name format:
+
+```
+{DDL ACTION}_{TABLE NAME}_table_{DESCRIPTION OF CHANGES}
+```
+
+- DDL ACTION: `ALTER` or `CREATE`
+- TABLE NAME: Name of the affected table
+- DESCRIPTION OF CHANGES: Describing the changes being made concisely
+
 ```bash
 deno run -A https://deno.land/x/nessie/cli.ts make {your migration file name in snake-case and all lowercase}
 
