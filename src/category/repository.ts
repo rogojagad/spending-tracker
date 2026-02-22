@@ -6,6 +6,7 @@ export interface ICategory {
   id?: string;
   name: string;
   priority: number;
+  isActive: boolean;
 }
 
 const getAll = async (): Promise<ICategory[]> => {
@@ -24,8 +25,16 @@ const getOneById = async (id: string): Promise<ICategory> => {
   return result;
 };
 
+const getAllActive = (): Promise<ICategory[]> => {
+  return db.selectFrom(CATEGORY_TABLE).selectAll().where("isActive", "==", true)
+    .orderBy(
+      "priority asc",
+    ).execute();
+};
+
 const categoryRepository = {
   getAll,
+  getAllActive,
   getOneById,
 };
 

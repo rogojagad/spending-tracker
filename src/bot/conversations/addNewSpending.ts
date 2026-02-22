@@ -34,7 +34,7 @@ export async function addNewSpending(
   const amount = Number(ctx.match[1]);
   const description = ctx.match[2];
 
-  const categories = await categoryRepository.getAll();
+  const categories = await categoryRepository.getAllActive();
   const sources = await sourceCategory.getAllActive();
 
   const categoryId = await getSpendingCategory(categories, ctx, conversation);
