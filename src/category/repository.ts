@@ -26,7 +26,7 @@ const getOneById = async (id: string): Promise<ICategory> => {
 };
 
 const getAllActive = (): Promise<ICategory[]> => {
-  return db.selectFrom(CATEGORY_TABLE).selectAll().where("isActive", "==", true)
+  return db.selectFrom(CATEGORY_TABLE).selectAll().where("isActive", "=", true)
     .orderBy(
       "priority asc",
     ).execute();
