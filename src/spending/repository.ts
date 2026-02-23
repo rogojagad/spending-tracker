@@ -203,11 +203,12 @@ const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
     select 
       date_trunc('month', spending.created_at) as month,
       sum(spending.amount) as amount,
-      category.name as category_name
+      category.name as category_name,
+      category.priority as category_priority
     from spending 
     join category on category.id = spending.category_id
     group by month, category_name
-    order by month desc
+    order by month desc, category_priority asc
   `
     .execute(db);
 
