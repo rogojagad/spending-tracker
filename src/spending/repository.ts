@@ -207,8 +207,8 @@ const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
       category.priority as category_priority
     from spending 
     join category on category.id = spending.category_id
-    group by month, category_name
-    order by month desc, category_priority asc
+    group by month, category.name, category.priority
+    order by month desc, category.priority asc
   `
     .execute(db);
 
