@@ -90,8 +90,7 @@ const downloadMonthlySummary = async (): Promise<string> => {
     };
   });
 
-  const columns = Object.keys(flattenedSummary);
-  console.log(flattenedSummary);
+  const columns = Object.keys(flattenedSummary[0]);
 
   return stringify(flattenedSummary, { columns });
 };
