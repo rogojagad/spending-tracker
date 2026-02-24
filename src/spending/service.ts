@@ -66,7 +66,7 @@ const getMonthlySpendingSummaries = async (): Promise<
       summaries,
     };
   }).sort((a, b) => {
-    return dayjs(a.month).isBefore(b.month) ? -1 : 1;
+    return dayjs(a.month).isBefore(b.month) ? 1 : -1;
   });
 };
 
