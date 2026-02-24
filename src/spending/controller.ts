@@ -45,4 +45,9 @@ app.get("/summaries/months", auth, async (c: Context) => {
   return c.json(summaries);
 });
 
+app.get("/summaries/months/csv", auth, async (c: Context) => {
+  const summaryString = await spendingService.downloadMonthlySummary();
+  return c.text(summaryString);
+});
+
 export default app;

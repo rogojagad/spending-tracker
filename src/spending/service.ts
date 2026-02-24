@@ -3,6 +3,7 @@ import spendingRepository, {
 } from "~/src/spending/repository.ts";
 import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
+import { stringify } from "@std/csv";
 import categoryService from "../category/service.ts";
 
 interface ISpendingAmountSummaryForMonth {
@@ -70,9 +71,34 @@ const getMonthlySpendingSummaries = async (): Promise<
   });
 };
 
+const downloadMonthlySummary = async (): Promise<string> => {
+  const summaries = await getMonthlySpendingSummaries();
+  const flattenedSummary = summaries.map((summ) => {
+    const month = summ.month;
+    const total = summ.total;
+
+    const categoryNameToTotal: Record<string, number> = {};
+
+    summ.summaries.forEach((it) => {
+      categoryNameToTotal[it.categoryName] = it.amount;
+    });
+
+    return {
+      month,
+      total,
+      ...categoryNameToTotal,
+    };
+  });
+
+  const columns = Object.keys(flattenedSummary);
+
+  return stringify(flattenedSummary, { columns });
+};
+
 const spendingService = {
   getManySpendings,
   getMonthlySpendingSummaries,
+  downloadMonthlySummary,
 };
 
 export default spendingService;

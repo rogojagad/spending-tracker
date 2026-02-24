@@ -9,6 +9,7 @@
     "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
     "@hono/middleware": "https://deno.land/x/hono@v4.3.11/middleware.ts",
     "@deno/collection": "https://deno.land/std@0.224.0/collections/mod.ts",
+    "@std/csv": "jsr:@std/csv@^1.0.6",
     "dayjs": "npm:dayjs@1.11.13",
     "google-auth-library": "npm:google-auth-library@9.14.1",
     "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
