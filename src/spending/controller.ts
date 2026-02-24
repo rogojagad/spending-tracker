@@ -46,8 +46,15 @@ app.get("/summaries/months", auth, async (c: Context) => {
 });
 
 app.get("/summaries/months/csv", auth, async (c: Context) => {
-  const summaryString = await spendingService.downloadMonthlySummary();
-  return c.text(summaryString);
+  const content = await spendingService.downloadMonthlySummary();
+
+  c.header("Content-Type", "text/csv");
+  c.header(
+    "Content-Disposition",
+    `attachment; filename="spending-summary.csv"`,
+  );
+
+  return c.body(content);
 });
 
 export default app;
