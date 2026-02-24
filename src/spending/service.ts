@@ -3,6 +3,7 @@ import spendingRepository, {
 } from "~/src/spending/repository.ts";
 import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
+import categoryService from "../category/service.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -29,34 +30,44 @@ const getManySpendings = async (
 const getMonthlySpendingSummaries = async (): Promise<
   ISpendingAmountSummaryForMonth[]
 > => {
-  const monthAndCategoryNameSpendings = await spendingRepository
-    .getSpendingSummariesGroupByMonthAndCategoryName();
+  const monthAndCategorySpendings = await spendingRepository
+    .getSpendingSummariesGroupByMonthAndCategory();
+  const categories = await categoryService.getAll();
 
-  const summariesByMonth = new Map<string, IAmountForCategory[]>();
+  const spendingSummariesByMonth = Object.groupBy(
+    monthAndCategorySpendings,
+    (it) => dayjs(it.month).format(),
+  );
 
-  monthAndCategoryNameSpendings.forEach((spending) => {
-    const { month } = spending;
-    const monthString = dayjs(month).format();
-    const existingSummaryByMonth = summariesByMonth.get(monthString) || [];
-
-    summariesByMonth.set(
-      monthString,
-      existingSummaryByMonth.concat({
-        amount: spending.amount,
-        categoryName: spending.categoryName,
-      }),
-    );
-  });
-
-  return summariesByMonth.entries().map((entry) => {
-    const month = dayjs(entry[0]).toDate();
-    const summaries = entry[1];
-    const total = summaries.reduce((prev, next) => {
-      return prev + next.amount;
+  return Object.keys(spendingSummariesByMonth).map((month) => {
+    const monthSummaries = spendingSummariesByMonth[month];
+    const total = monthSummaries!.reduce((prev, curr) => {
+      return prev + curr.amount;
     }, 0);
 
-    return { month, total, summaries };
-  }).toArray();
+    /**
+     * - Map from `categories` coz it is already sorted by `priority` when fetched from DB. We want to persists the order.
+     * - If there are no spendings for this category in a month, return 0
+     */
+    const summaries: IAmountForCategory[] = categories.map((it) => {
+      const categorySummary = monthSummaries?.find((monthSummary) =>
+        monthSummary.categoryId === it.id!
+      );
+
+      return {
+        categoryName: it.name,
+        amount: categorySummary?.amount ?? 0,
+      };
+    });
+
+    return {
+      total,
+      month: dayjs(month).toDate(),
+      summaries,
+    };
+  }).sort((a, b) => {
+    return dayjs(a.month).isBefore(b.month) ? -1 : 1;
+  });
 };
 
 const spendingService = {

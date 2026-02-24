@@ -31,10 +31,11 @@ export interface ITotalSpendingAmountBySourceNameAndCategoryName {
   amount: number;
 }
 
-export interface ITotalSpendingAmountForMonthAndCategoryName {
+export interface ITotalSpendingAmountForMonthAndCategory {
   amount: number;
   month: Date;
   categoryName: string;
+  categoryId: string;
 }
 
 const getAll = async (): Promise<ISpending[]> => {
@@ -196,18 +197,19 @@ const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
   return spendings.rows;
 };
 
-const getSpendingSummariesGroupByMonthAndCategoryName = async (): Promise<
-  ITotalSpendingAmountForMonthAndCategoryName[]
+const getSpendingSummariesGroupByMonthAndCategory = async (): Promise<
+  ITotalSpendingAmountForMonthAndCategory[]
 > => {
-  const summaries = await sql<ITotalSpendingAmountForMonthAndCategoryName>`
+  const summaries = await sql<ITotalSpendingAmountForMonthAndCategory>`
     select 
       date_trunc('month', spending.created_at) as month,
       sum(spending.amount) as amount,
       category.name as category_name,
       category.priority as category_priority
+      category.id as category_id
     from spending 
     join category on category.id = spending.category_id
-    group by month, category.name, category.priority
+    group by month, category.name, category.priority, category.id
     order by month desc, category.priority asc
   `
     .execute(db);
@@ -265,7 +267,7 @@ const spendingRepository = {
   getAllSpendingsThisMonth,
   getTodaySpendingAmountToSettlePerSourceAndCategory,
   getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
-  getSpendingSummariesGroupByMonthAndCategoryName,
+  getSpendingSummariesGroupByMonthAndCategory,
 };
 
 export default spendingRepository;
