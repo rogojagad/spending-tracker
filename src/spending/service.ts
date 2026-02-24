@@ -95,7 +95,10 @@ const downloadMonthlySummary = async (): Promise<string> => {
     };
   });
 
-  return stringify(flattenedSummary);
+  console.log(flattenedSummary);
+
+  const columns = Object.keys(flattenedSummary[0]);
+  return stringify(flattenedSummary, { columns });
 };
 
 const spendingService = {
