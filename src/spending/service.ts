@@ -73,8 +73,13 @@ const getMonthlySpendingSummaries = async (): Promise<
 
 const downloadMonthlySummary = async (): Promise<string> => {
   const summaries = await getMonthlySpendingSummaries();
+
+  if (summaries.length === 0) {
+    return "";
+  }
+
   const flattenedSummary = summaries.map((summ) => {
-    const month = summ.month;
+    const month = dayjs(summ.month).format("YYYY-MM-DD");
     const total = summ.total;
 
     const categoryNameToTotal: Record<string, number> = {};
@@ -90,9 +95,7 @@ const downloadMonthlySummary = async (): Promise<string> => {
     };
   });
 
-  const columns = Object.keys(flattenedSummary[0]);
-
-  return stringify(flattenedSummary, { columns });
+  return stringify(flattenedSummary);
 };
 
 const spendingService = {
