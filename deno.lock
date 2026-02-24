@@ -1,5 +1,5 @@
 {
-  "version": "5",
+  "version": "4",
   "specifiers": {
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/csv@^1.0.6": "1.0.6",
