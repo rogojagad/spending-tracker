@@ -3,8 +3,8 @@ import { cors, logger } from "@hono/middleware";
 import dayjs from "dayjs";
 import spendingService from "./service.ts";
 import {
-  GetManySpendingsFilterQueryParam,
-  IGetManySpendingsFilterQueryParam,
+  GetManySpendingsFilterQuery,
+  IGetManySpendingsFilterQuery,
 } from "./interface.ts";
 import { auth } from "../middleware.ts";
 
@@ -23,8 +23,8 @@ app.get("/", auth, async (c: Context) => {
   } = c.req
     .query();
 
-  const getSpendingsFilters: IGetManySpendingsFilterQueryParam =
-    new GetManySpendingsFilterQueryParam({
+  const getSpendingsFilters: IGetManySpendingsFilterQuery =
+    new GetManySpendingsFilterQuery({
       category,
       source,
       createdAtFromInclusive: fromInclusive

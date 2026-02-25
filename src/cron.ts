@@ -6,6 +6,7 @@ const register = () => {
       jobService.sendDailySummary(),
       jobService.sendDailySettlementReminderIfAny(),
       jobService.doEndOfMonthReconciliationIfApplied(),
+      jobService.snapshotLimitUsage(),
     ]);
 
     console.log(`Finished cron...`);

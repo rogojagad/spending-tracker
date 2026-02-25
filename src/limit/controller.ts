@@ -10,7 +10,7 @@ app.use(logger());
 app.use(cors());
 
 app.get("/", auth, async (c: Context) => {
-  const sources = await limitService.getAndCalculateAllLimitUsage();
+  const sources = await limitService.getAndCalculateLimitUsage();
   return c.json(sources);
 });
 

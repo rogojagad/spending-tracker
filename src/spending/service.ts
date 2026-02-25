@@ -1,7 +1,7 @@
 import spendingRepository, {
   ISpendingWithCategoryNameAndSourceName,
 } from "~/src/spending/repository.ts";
-import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
+import { IGetManySpendingsFilterQuery } from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
 import { stringify } from "@std/csv";
 import categoryService from "../category/service.ts";
@@ -18,12 +18,12 @@ interface IAmountForCategory {
 }
 
 const getManySpendings = async (
-  filter: IGetManySpendingsFilterQueryParam,
+  filter: IGetManySpendingsFilterQuery,
 ): Promise<
   ISpendingWithCategoryNameAndSourceName[]
 > => {
   const spendings = await spendingRepository
-    .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(filter);
+    .getMany(filter);
 
   return spendings;
 };

@@ -56,9 +56,17 @@ const getPaydaysForThisYear = async (): Promise<IPayday[]> => {
   );
 };
 
+const getForToday = (): Promise<IPayday[]> => {
+  return getManyForRange(
+    dayjs().startOf("day"),
+    dayjs().add(1, "day").startOf("day"),
+  );
+};
+
 const paydayConfigurationRepository = {
   insertMany,
   getPaydaysForThisYear,
+  getForToday,
   getLatest,
 };
 

@@ -1,6 +1,8 @@
-import { GetManySpendingsFilterQueryParam } from "../spending/interface.ts";
+import dayjs from "dayjs";
+import paydayConfigurationService from "../configuration/payday/service.ts";
+import { GetManySpendingsFilterQuery } from "../spending/interface.ts";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
-import limitRepository, { ILimit } from "./repository.ts";
+import limitRepository, { ApplicationPeriod, ILimit } from "./repository.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
 
@@ -65,8 +67,8 @@ const getLimitsExceededBySpending = async (spending: ISpending): Promise<
       .calculateLimitApplicationDateRange(limit);
 
     const spendings = await spendingRepository
-      .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(
-        new GetManySpendingsFilterQueryParam({
+      .getMany(
+        new GetManySpendingsFilterQuery({
           category: categoryId || null,
           source: sourceId || null,
           descriptionKeywords: null,
@@ -93,25 +95,56 @@ const getLimitsExceededBySpending = async (spending: ISpending): Promise<
   return checkResults;
 };
 
-const getAndCalculateAllLimitUsage = async (): Promise<
+const getAndCalculateLimitUsage = async (): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
+  const isTodayPayday = await paydayConfigurationService.checkIsTodayPayday();
+  const today = dayjs();
 
-  const spendingsForEachLimit = await Promise.all(limits.map(
-    async (limit) => {
-      const createdAtRange = await applicationDateCalculator
-        .calculateLimitApplicationDateRange(limit);
+  const spendingsForEachLimit = await Promise.all(
+    limits
+      .filter((limit) => { // filter limit due to be snapshotted
+        const applicationPeriod = limit.applicationPeriod;
 
-      return spendingRepository
-        .getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange(
-          GetManySpendingsFilterQueryParam.fromLimitAndCreatedAtRange(
-            limit,
-            createdAtRange,
-          ),
-        );
-    },
-  ));
+        switch (applicationPeriod) {
+          case ApplicationPeriod.PAYDAY:
+            return isTodayPayday;
+
+          case ApplicationPeriod.MONTHLY:
+            return dayjs().isSame(dayjs().endOf("month"));
+
+          case ApplicationPeriod.WEEKLY:
+            return dayjs().isSame(dayjs().endOf("week"));
+
+          case ApplicationPeriod.DATE2DATE: {
+            const creditCardBillingDate = Number(Deno.env.get(
+              "DATE2DATE_LIMIT_CREDIT_CARD",
+            ));
+            const thisMonthBillingDate = today.date(creditCardBillingDate);
+
+            return thisMonthBillingDate.isSame(today);
+          }
+
+          default:
+            return false;
+        }
+      })
+      .map(
+        async (limit) => {
+          const createdAtRange = await applicationDateCalculator
+            .calculateLimitApplicationDateRange(limit);
+
+          return spendingRepository
+            .getMany(
+              GetManySpendingsFilterQuery.fromLimitAndCreatedAtRange(
+                limit,
+                createdAtRange,
+              ),
+            );
+        },
+      ),
+  );
 
   /**
    * `Promise.all` guarantee the resulting array item's order is the same as the promise passed, regardless of the completion order.
@@ -136,7 +169,7 @@ const getAndCalculateAllLimitUsage = async (): Promise<
 
 const limitService = {
   getLimitsExceededBySpending,
-  getAndCalculateAllLimitUsage,
+  getAndCalculateLimitUsage,
 };
 
 export default limitService;

@@ -38,7 +38,6 @@ const doEndOfMonthReconciliationIfApplied = async (): Promise<void> => {
   await Promise.all([
     sendMonthlySummary(),
     snapshotSpendingsToSpreadsheet(),
-    snapshotLimitUsage(),
   ]); // can be done concurrently
 };
 
@@ -61,7 +60,7 @@ const snapshotSpendingsToSpreadsheet = async (): Promise<void> => {
 };
 
 const snapshotLimitUsage = async (): Promise<void> => {
-  const limitUsage = await limitService.getAndCalculateAllLimitUsage();
+  const limitUsage = await limitService.getAndCalculateLimitUsage();
   await Promise.all(limitUsage.map((limitUsage) => {
     // Strip extra fields (categoryName, sourceName) that aren't in ILimitSnapshot
     const {

@@ -95,10 +95,17 @@ const getLatest = async (): Promise<IPayday> => {
   return payday;
 };
 
+const checkIsTodayPayday = async (): Promise<boolean> => {
+  const payday = await paydayConfigurationRepository.getForToday();
+
+  return payday.length === 0 ? false : true;
+};
+
 const paydayConfigurationService = {
   populateForThisYear,
   getAllThisYear,
   getLatest,
+  checkIsTodayPayday,
 };
 
 export default paydayConfigurationService;

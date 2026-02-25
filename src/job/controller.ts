@@ -14,6 +14,7 @@ app.post("/eod", async (c: Context) => {
     jobService.sendDailySummary(),
     jobService.sendDailySettlementReminderIfAny(),
     jobService.doEndOfMonthReconciliationIfApplied(),
+    jobService.snapshotLimitUsage(),
   ]);
   return c.json({});
 });

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import db from "~/src/postgre.ts";
 import { sql } from "kysely";
-import { IGetManySpendingsFilterQueryParam } from "~/src/spending/interface.ts";
+import { IGetManySpendingsFilterQuery } from "~/src/spending/interface.ts";
 
 export const SPENDING_TABLE = "spending";
 
@@ -158,8 +158,8 @@ const getSpendingAmountPerCategoryWithSourceNeedSettlementCreatedAtDatetimeRange
     return spendings.rows;
   };
 
-const getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange = async (
-  filter: IGetManySpendingsFilterQueryParam,
+const getMany = async (
+  filter: IGetManySpendingsFilterQuery,
 ): Promise<ISpendingWithCategoryNameAndSourceName[]> => {
   const descriptionSearchQuery = filter.descriptionKeywordsToVectorQuery();
 
@@ -266,7 +266,7 @@ const spendingRepository = {
   getThisMonthSpendingSummary,
   getAllSpendingsThisMonth,
   getTodaySpendingAmountToSettlePerSourceAndCategory,
-  getSpendingsByCategoryIdSourceIdAndCreatedAtDatetimeRange,
+  getMany,
   getSpendingSummariesGroupByMonthAndCategory,
 };
 

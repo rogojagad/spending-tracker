@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import { ILimit } from "../limit/repository.ts";
 
-export interface IGetManySpendingsFilterQueryParam {
+export interface IGetManySpendingsFilterQuery {
   category: string | null;
   source: string | null;
   descriptionKeywords: string[] | null;
@@ -32,8 +32,8 @@ export interface IGetManySpendingsCreatedAtRangeFilter {
   toExclusive: Dayjs;
 }
 
-export class GetManySpendingsFilterQueryParam
-  implements IGetManySpendingsFilterQueryParam {
+export class GetManySpendingsFilterQuery
+  implements IGetManySpendingsFilterQuery {
   category: string | null = null;
   source: string | null = null;
   descriptionKeywords: string[] | null = null;
@@ -63,8 +63,8 @@ export class GetManySpendingsFilterQueryParam
   static fromLimitAndCreatedAtRange(
     limit: ILimit,
     createdAt: IGetManySpendingsCreatedAtRangeFilter,
-  ): GetManySpendingsFilterQueryParam {
-    return new GetManySpendingsFilterQueryParam({
+  ): GetManySpendingsFilterQuery {
+    return new GetManySpendingsFilterQuery({
       category: limit.categoryId ?? null,
       source: limit.sourceId ?? null,
       descriptionKeywords: limit.descriptionKeywords ?? null,
