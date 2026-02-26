@@ -60,7 +60,7 @@ const snapshotSpendingsToSpreadsheet = async (): Promise<void> => {
 };
 
 const snapshotLimitUsage = async (): Promise<void> => {
-  const limitUsage = await limitService.getAndCalculateLimitUsage();
+  const limitUsage = await limitService.calculateLimitsUsage();
   await Promise.all(limitUsage.map((limitUsage) => {
     // Strip extra fields (categoryName, sourceName) that aren't in ILimitSnapshot
     const {

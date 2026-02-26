@@ -2,7 +2,11 @@ import dayjs from "dayjs";
 import paydayConfigurationService from "../configuration/payday/service.ts";
 import { GetManySpendingsFilterQuery } from "../spending/interface.ts";
 import spendingRepository, { ISpending } from "../spending/repository.ts";
-import limitRepository, { ApplicationPeriod, ILimit } from "./repository.ts";
+import limitRepository, {
+  ApplicationPeriod,
+  ILimit,
+  ILimitWithCategoryAndSourceName,
+} from "./repository.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
 
@@ -95,11 +99,47 @@ const getLimitsExceededBySpending = async (spending: ISpending): Promise<
   return checkResults;
 };
 
-const getAndCalculateLimitUsage = async (): Promise<
+const getAll = (): Promise<
+  ILimitWithCategoryAndSourceName[]
+> => limitRepository.getAllWithCategoryAndSourceName();
+
+const getAllDue = async (): Promise<ILimitWithCategoryAndSourceName[]> => {
+  const limits = await limitRepository.getAllWithCategoryAndSourceName();
+  const isTodayPayday = await paydayConfigurationService.checkIsTodayPayday();
+  const today = dayjs();
+
+  return limits.filter((limit) => { // filter limit due to be snapshotted
+    const applicationPeriod = limit.applicationPeriod;
+
+    switch (applicationPeriod) {
+      case ApplicationPeriod.PAYDAY:
+        return isTodayPayday;
+
+      case ApplicationPeriod.MONTHLY:
+        return dayjs().isSame(dayjs().endOf("month"));
+
+      case ApplicationPeriod.WEEKLY:
+        return dayjs().isSame(dayjs().endOf("week"));
+
+      case ApplicationPeriod.DATE2DATE: {
+        const creditCardBillingDate = Number(Deno.env.get(
+          "DATE2DATE_LIMIT_CREDIT_CARD",
+        ));
+        const thisMonthBillingDate = today.date(creditCardBillingDate);
+
+        return thisMonthBillingDate.isSame(today);
+      }
+
+      default:
+        return false;
+    }
+  });
+};
+
+const calculateLimitsUsage = async (limits: ILimit[]): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
-  const limits = await limitRepository.getAllWithCategoryAndSourceName();
-
+  if (limits.length === 0) return [];
   const spendingsForEachLimit = await Promise.all(
     limits
       .map(
@@ -141,7 +181,9 @@ const getAndCalculateLimitUsage = async (): Promise<
 
 const limitService = {
   getLimitsExceededBySpending,
-  getAndCalculateLimitUsage,
+  calculateLimitsUsage,
+  getAll,
+  getAllDue,
 };
 
 export default limitService;

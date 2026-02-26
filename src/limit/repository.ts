@@ -36,7 +36,7 @@ export interface ILimit {
   applicationPeriod: ApplicationPeriod;
 }
 
-interface ILimitWithCategoryAndSourceName extends ILimit {
+export interface ILimitWithCategoryAndSourceName extends ILimit {
   categoryName?: string | null;
   sourceName?: string | null;
 }
