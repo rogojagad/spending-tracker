@@ -99,37 +99,9 @@ const getAndCalculateLimitUsage = async (): Promise<
   ILimitCheckResultWithCategoryAndSourceName[]
 > => {
   const limits = await limitRepository.getAllWithCategoryAndSourceName();
-  const isTodayPayday = await paydayConfigurationService.checkIsTodayPayday();
-  const today = dayjs();
 
   const spendingsForEachLimit = await Promise.all(
     limits
-      .filter((limit) => { // filter limit due to be snapshotted
-        const applicationPeriod = limit.applicationPeriod;
-
-        switch (applicationPeriod) {
-          case ApplicationPeriod.PAYDAY:
-            return isTodayPayday;
-
-          case ApplicationPeriod.MONTHLY:
-            return dayjs().isSame(dayjs().endOf("month"));
-
-          case ApplicationPeriod.WEEKLY:
-            return dayjs().isSame(dayjs().endOf("week"));
-
-          case ApplicationPeriod.DATE2DATE: {
-            const creditCardBillingDate = Number(Deno.env.get(
-              "DATE2DATE_LIMIT_CREDIT_CARD",
-            ));
-            const thisMonthBillingDate = today.date(creditCardBillingDate);
-
-            return thisMonthBillingDate.isSame(today);
-          }
-
-          default:
-            return false;
-        }
-      })
       .map(
         async (limit) => {
           const createdAtRange = await applicationDateCalculator
