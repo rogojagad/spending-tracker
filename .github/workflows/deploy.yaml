@@ -19,7 +19,12 @@ jobs:
       - name: Install Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v2.1
+          deno-version: v2.7
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v2.7
 
       - name: Run DB Migration
         run: deno task migrate:up
