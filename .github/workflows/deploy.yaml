@@ -22,7 +22,7 @@ jobs:
           deno-version: v2.7
 
       - name: Check Type
-        run: deno check
+        run: deno check --allow-import
 
       - name: Run DB Migration
         run: deno task migrate:up
