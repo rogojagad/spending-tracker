@@ -1,7 +1,7 @@
 import { type Context, Hono } from "@hono/hono";
 import { logger } from "@hono/logger";
 import { cors } from "@hono/cors";
-import { auth } from "../middleware.ts";
+import { auth } from "../auth.ts";
 import categoryService from "./service.ts";
 
 const app = new Hono();

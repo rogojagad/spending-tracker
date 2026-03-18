@@ -7,7 +7,7 @@ import {
   GetManySpendingsFilterQuery,
   IGetManySpendingsFilterQuery,
 } from "./interface.ts";
-import { auth } from "../middleware.ts";
+import { auth } from "../auth.ts";
 import { BulkCreateSpendingParamsSchema } from "./schemas.ts";
 import { zValidator } from "@hono/zod-validator";
 

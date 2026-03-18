@@ -1,5 +1,6 @@
-import { cors, logger } from "@hono/middleware";
-import { generateToken, validatePassword } from "~/src/middleware.ts";
+import { cors } from "@hono/cors";
+import { logger } from "@hono/logger";
+import { generateToken, validatePassword } from "./auth.ts";
 import { type Context, Hono } from "@hono/hono";
 import categoryController from "./category/controller.ts";
 import limitController from "./limit/controller.ts";
