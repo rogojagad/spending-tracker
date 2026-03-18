@@ -8,9 +8,10 @@ import {
 } from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
 import { stringify } from "@std/csv";
-import categoryService from "../category/service.ts";
-import sourceService from "../source/service.ts";
-import { BulkCreateSpendingValidator } from "./bulkCreate/validator.ts";
+import categoryService from "~/src/category/service.ts";
+import sourceService from "~/src/source/service.ts";
+import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
+import { SpendingTrackerError } from "~/src/error/error.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -122,7 +123,10 @@ const createManySpendings = async (
   const validationResult = validator.validate(payload);
 
   if (!validationResult.isValid()) {
-    // do return 400
+    throw new SpendingTrackerError(
+      `Invalid bulk create spending parameters`,
+      { cause: validationResult.errors },
+    );
   }
 
   // create and return

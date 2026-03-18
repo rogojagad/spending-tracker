@@ -1,5 +1,5 @@
 import { ErrorHandler } from "@hono/hono";
-import { ZodError } from "@zod/zod";
+import { SpendingTrackerError } from "./error/error.ts";
 
 interface ZodErrorMessage {
   expected: string;
@@ -8,18 +8,13 @@ interface ZodErrorMessage {
   path: string[];
 }
 
-const onError: ErrorHandler = (err, c): Response => {
-  if (err instanceof ZodError) {
-    const errorMessage: ZodErrorMessage[] = JSON.parse(err.message);
-    const simplified = errorMessage.map((it) => ({
-      field: it.path[1],
-      message: it.message,
-      code: it.code,
-    }));
-    return c.json(simplified, 400);
+export const onHandlerError: ErrorHandler = (err, c): Response => {
+  if (err instanceof SpendingTrackerError) {
+    const cause = err.cause;
+    const message = err.message;
+
+    return c.json({ cause, message }, 400);
   }
 
   return c.json({ message: "Internal Server Error" }, 500);
 };
-
-export default onError;
