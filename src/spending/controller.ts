@@ -49,6 +49,8 @@ app.post(
   zValidator("json", BulkCreateSpendingParamsSchema),
   async (context) => {
     const payload = context.req.valid("json");
+    const result = await spendingService.createManySpendings(payload);
+    return context.json(result);
   },
 );
 
