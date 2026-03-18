@@ -11,6 +11,7 @@ import jobController from "./job/controller.ts";
 import bot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
 import cron from "./cron.ts";
+import onError from "./advice.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -18,6 +19,7 @@ const app = new Hono();
 /** Middleware */
 app.use(logger());
 app.use(cors());
+app.onError(onError);
 
 /** Endpoints */
 app.post("/auth", async (c: Context) => {
