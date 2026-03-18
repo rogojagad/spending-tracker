@@ -1,6 +1,6 @@
 import { cors } from "@hono/cors";
 import { logger } from "@hono/logger";
-import { generateToken, validatePassword } from "./auth.ts";
+import { generateToken, validatePassword } from "./middleware/auth.ts";
 import { type Context, Hono } from "@hono/hono";
 import categoryController from "./category/controller.ts";
 import limitController from "./limit/controller.ts";
@@ -11,7 +11,7 @@ import jobController from "./job/controller.ts";
 import bot from "~/src/bot/client.ts";
 import { webhookCallback } from "grammy";
 import cron from "./cron.ts";
-import { onHandlerError } from "./advice.ts";
+import { onHandlerError } from "./middleware/advice.ts";
 
 /** HTTP Server */
 const app = new Hono();

@@ -3,7 +3,7 @@ import { logger } from "@hono/logger";
 import { cors } from "@hono/cors";
 import jobService from "./service.ts";
 import { JobType } from "./enum.ts";
-import { auth } from "../auth.ts";
+import { auth } from "../middleware/auth.ts";
 
 const app = new Hono();
 
