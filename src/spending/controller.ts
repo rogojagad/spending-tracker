@@ -1,5 +1,6 @@
 import { type Context, Hono } from "@hono/hono";
-import { cors, logger } from "@hono/middleware";
+import { logger } from "@hono/logger";
+import { cors } from "@hono/cors";
 import dayjs from "dayjs";
 import spendingService from "./service.ts";
 import {
@@ -7,6 +8,8 @@ import {
   IGetManySpendingsFilterQuery,
 } from "./interface.ts";
 import { auth } from "../middleware.ts";
+import { BulkCreateSpendingParamsSchema } from "./schemas.ts";
+import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono();
 
@@ -39,6 +42,15 @@ app.get("/", auth, async (c: Context) => {
   const spendings = await spendingService.getManySpendings(getSpendingsFilters);
   return c.json(spendings);
 });
+
+app.post(
+  "/bulk",
+  auth,
+  zValidator("json", BulkCreateSpendingParamsSchema),
+  async (context) => {
+    const payload = context.req.valid("json");
+  },
+);
 
 app.get("/summaries/months", auth, async (c: Context) => {
   const summaries = await spendingService.getMonthlySpendingSummaries();

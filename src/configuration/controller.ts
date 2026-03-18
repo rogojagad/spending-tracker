@@ -1,5 +1,6 @@
 import { Context, Hono } from "@hono/hono";
-import { cors, logger } from "@hono/middleware";
+import { logger } from "@hono/logger";
+import { cors } from "@hono/cors";
 
 import { auth } from "../middleware.ts";
 import paydayConfigurationService from "./payday/service.ts";

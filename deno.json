@@ -6,10 +6,13 @@
     "start": "deno task migrate:up && deno task serve"
   },
   "imports": {
-    "@hono/hono": "https://deno.land/x/hono@v4.3.11/mod.ts",
-    "@hono/middleware": "https://deno.land/x/hono@v4.3.11/middleware.ts",
+    "@hono/hono": "npm:hono@4.3.11",
+    "@hono/logger": "npm:hono@4.3.11/logger",
+    "@hono/cors": "npm:hono@4.3.11/cors",
     "@deno/collection": "https://deno.land/std@0.224.0/collections/mod.ts",
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.7.6",
     "@std/csv": "jsr:@std/csv@^1.0.6",
+    "@zod/zod": "jsr:@zod/zod@^4.3.6",
     "dayjs": "npm:dayjs@1.11.13",
     "google-auth-library": "npm:google-auth-library@9.14.1",
     "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
@@ -21,8 +24,10 @@
     "nessie": "https://deno.land/x/nessie@2.0.11/mod.ts",
     "postgres": "npm:postgres@3.4.4",
     "spreadsheet": "npm:google-spreadsheet@4.1.4",
-    "zod": "https://deno.land/x/zod@v3.23.8/mod.ts",
     "~/": "./"
   },
-  "unstable": ["cron", "otel"]
+  "unstable": [
+    "cron",
+    "otel"
+  ]
 }

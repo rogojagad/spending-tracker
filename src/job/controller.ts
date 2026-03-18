@@ -1,5 +1,6 @@
 import { type Context, Hono } from "@hono/hono";
-import { cors, logger } from "@hono/middleware";
+import { logger } from "@hono/logger";
+import { cors } from "@hono/cors";
 import jobService from "./service.ts";
 import { JobType } from "./enum.ts";
 import { auth } from "../middleware.ts";

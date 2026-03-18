@@ -1,10 +1,16 @@
 import spendingRepository, {
+  ISpending,
   ISpendingWithCategoryNameAndSourceName,
 } from "~/src/spending/repository.ts";
-import { IGetManySpendingsFilterQuery } from "~/src/spending/interface.ts";
+import {
+  BulkCreateSpendingParams,
+  IGetManySpendingsFilterQuery,
+} from "~/src/spending/interface.ts";
 import dayjs from "dayjs";
 import { stringify } from "@std/csv";
 import categoryService from "../category/service.ts";
+import sourceService from "../source/service.ts";
+import { BulkCreateSpendingValidator } from "./bulkCreate/validator.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -101,7 +107,36 @@ const downloadMonthlySummary = async (): Promise<string> => {
   return stringify(flattenedSummary, { columns });
 };
 
+const createManySpendings = async (
+  payload: BulkCreateSpendingParams,
+): Promise<ISpending[]> => {
+  const [categories, sources] = await Promise.all([
+    categoryService.getAll(),
+    sourceService.getAll(),
+  ]);
+
+  const validator = new BulkCreateSpendingValidator(
+    categories.map((category) => category.id!),
+    sources.map((source) => source.id!),
+  );
+  const validationResult = validator.validate(payload);
+
+  if (!validationResult.isValid()) {
+    // do return 400
+  }
+
+  // create and return
+  // using Promise.all is not optimal because it will initiate new N connections according to number of data
+  // will be better if we use actual SQL create many
+  const result = await Promise.all(
+    payload.map((spending) => spendingRepository.createOneSpending(spending)),
+  );
+
+  return result;
+};
+
 const spendingService = {
+  createManySpendings,
   getManySpendings,
   getMonthlySpendingSummaries,
   downloadMonthlySummary,

@@ -1,5 +1,10 @@
 import dayjs, { Dayjs } from "dayjs";
 import { ILimit } from "../limit/repository.ts";
+import * as Zod from "@zod/zod";
+import {
+  BulkCreateSpendingParamsSchema,
+  CreateSpendingParamsSchema,
+} from "./schemas.ts";
 
 export interface IGetManySpendingsFilterQuery {
   category: string | null;
@@ -84,3 +89,9 @@ export class GetManySpendingsFilterQuery
     }).join(" | ") ?? "";
   }
 }
+
+export type CreateSpendingParams = Zod.infer<typeof CreateSpendingParamsSchema>;
+
+export type BulkCreateSpendingParams = Zod.infer<
+  typeof BulkCreateSpendingParamsSchema
+>;

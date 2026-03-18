@@ -1,13 +1,16 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/csv@^1.0.6": "1.0.6",
     "jsr:@std/streams@^1.0.9": "1.0.17",
+    "jsr:@zod/zod@^4.3.6": "4.3.6",
+    "npm:@hono/zod-validator@~0.7.6": "0.7.6_hono@4.3.11_zod@4.3.6",
     "npm:@types/node@*": "18.16.19",
     "npm:dayjs@1.11.13": "1.11.13",
     "npm:google-auth-library@9.14.1": "9.14.1",
     "npm:google-spreadsheet@4.1.4": "4.1.4_google-auth-library@9.14.1",
+    "npm:hono@4.3.11": "4.3.11",
     "npm:jose@6.0.8": "6.0.8",
     "npm:ky@1.8.1": "1.8.1",
     "npm:kysely-postgres-js@2.0.0": "2.0.0_kysely@0.27.4_postgres@3.4.4",
@@ -29,9 +32,19 @@
       "dependencies": [
         "jsr:@std/bytes"
       ]
+    },
+    "@zod/zod@4.3.6": {
+      "integrity": "7144e5e11f8ffc3cf6e2fca624f6597a8762898aac9868cc8938e9398b96ffe4"
     }
   },
   "npm": {
+    "@hono/zod-validator@0.7.6_hono@4.3.11_zod@4.3.6": {
+      "integrity": "sha512-Io1B6d011Gj1KknV4rXYz4le5+5EubcWEU/speUjuw9XMMIaP3n78yXLhjd2A3PXaXaUwEAluOiAyLqhBEJgsw==",
+      "dependencies": [
+        "hono",
+        "zod"
+      ]
+    },
     "@types/node@18.16.19": {
       "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA=="
     },
@@ -145,6 +158,9 @@
         "jws"
       ]
     },
+    "hono@4.3.11": {
+      "integrity": "sha512-Hle1uNqJJKkebFkFEEWr3UAElJP922Xy0STfl8c+1PH1q+l6WrmhwAJFS6YH8ZWJY4z46qJtssbyVwwPm3dP5w=="
+    },
     "https-proxy-agent@7.0.5": {
       "integrity": "sha512-1e4Wqeblerz+tMKPIq2EMGiiWW1dIjZOksyHWSUm1rmuvw/how9hBHZ38lAGj5ID4Ik6EdkOw7NmWPy6LAwalw==",
       "dependencies": [
@@ -238,6 +254,9 @@
         "tr46",
         "webidl-conversions"
       ]
+    },
+    "zod@4.3.6": {
+      "integrity": "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="
     }
   },
   "redirects": {
@@ -1277,9 +1296,12 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/csv@^1.0.6",
+      "jsr:@zod/zod@^4.3.6",
+      "npm:@hono/zod-validator@~0.7.6",
       "npm:dayjs@1.11.13",
       "npm:google-auth-library@9.14.1",
       "npm:google-spreadsheet@4.1.4",
+      "npm:hono@4.3.11",
       "npm:jose@6.0.8",
       "npm:ky@1.8.1",
       "npm:kysely-postgres-js@2.0.0",
