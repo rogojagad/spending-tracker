@@ -58,11 +58,11 @@ app.route("/jobs", jobController);
  */
 // const bot = new TelegramBot();
 
-const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
-console.info(`Should use webhook mode: ${shouldUseWebhookMode}`);
-if (shouldUseWebhookMode) {
-  app.use(webhookCallback(bot.getClientInstance(), "hono"));
-} else bot.start();
+// const shouldUseWebhookMode = Deno.env.get("SHOULD_USE_WEBHOOK");
+// console.info(`Should use webhook mode: ${shouldUseWebhookMode}`);
+// if (shouldUseWebhookMode) {
+//   app.use(webhookCallback(bot.getClientInstance(), "hono"));
+// } else bot.start();
 
 /** App Serve */
 Deno.serve({ port: 8080 }, app.fetch);

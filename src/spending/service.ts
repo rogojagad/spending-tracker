@@ -11,7 +11,7 @@ import { stringify } from "@std/csv";
 import categoryService from "~/src/category/service.ts";
 import sourceService from "~/src/source/service.ts";
 import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
-import { SpendingTrackerError } from "~/src/error/error.ts";
+import { ErrorCode, SpendingTrackerError } from "~/src/error/error.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -124,7 +124,7 @@ const createManySpendings = async (
 
   if (!validationResult.isValid()) {
     throw new SpendingTrackerError(
-      `Invalid bulk create spending parameters`,
+      ErrorCode.INVALID_CATEGORY_OR_SOURCE,
       { cause: validationResult.errors },
     );
   }

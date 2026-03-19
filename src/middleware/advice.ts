@@ -1,16 +1,23 @@
 import { type Hook } from "@hono/zod-validator";
 import { ErrorHandler } from "@hono/hono";
-import { SpendingTrackerError } from "../error/error.ts";
+import { ErrorCode, SpendingTrackerError } from "../error/error.ts";
+
+interface ErrorResponse {
+  code: string;
+  errors: Record<string, unknown> | Record<string, unknown>[];
+}
 
 export const onHandlerError: ErrorHandler = (err, c): Response => {
   if (err instanceof SpendingTrackerError) {
-    const cause = err.cause;
-    const message = err.message;
+    const errors = err.cause as Record<string, unknown>;
+    const code = err.message;
+    const errorResponse: ErrorResponse = { code, errors };
 
-    return c.json({ cause, message }, 400);
+    return c.json(errorResponse, 400);
   }
 
-  return c.json({ message: "Internal Server Error" }, 500);
+  console.log(err);
+  return c.json({ code: "Internal Server Error" }, 500);
 };
 
 export const onZodValidationResult: Hook<any, any, any> = (
@@ -20,9 +27,8 @@ export const onZodValidationResult: Hook<any, any, any> = (
   if (!result.success) {
     const issues = result.error!.issues;
 
-    const customErrorResponse = {
-      status: 400,
-      message: "Invalid payload",
+    const customErrorResponse: ErrorResponse = {
+      code: ErrorCode.INVALID_PAYLOAD,
       errors: issues.map((issue) => ({
         path: issue.path.join("."),
         message: issue.message,

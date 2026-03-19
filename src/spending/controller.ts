@@ -45,7 +45,7 @@ app.get("/", auth, async (c: Context) => {
 
 app.post(
   "/bulk",
-  auth,
+  // auth,
   validatePayload(BulkCreateSpendingParamsSchema),
   async (context) => {
     const payload = await context.req.json();
