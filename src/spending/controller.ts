@@ -9,7 +9,7 @@ import {
 } from "./interface.ts";
 import { auth } from "../middleware/auth.ts";
 import { BulkCreateSpendingParamsSchema } from "./schemas.ts";
-import { zValidator } from "@hono/zod-validator";
+import { validatePayload } from "~/src/middleware/validation.ts";
 
 const app = new Hono();
 
@@ -46,9 +46,9 @@ app.get("/", auth, async (c: Context) => {
 app.post(
   "/bulk",
   auth,
-  zValidator("json", BulkCreateSpendingParamsSchema),
+  validatePayload(BulkCreateSpendingParamsSchema),
   async (context) => {
-    const payload = context.req.valid("json");
+    const payload = await context.req.json();
     const result = await spendingService.createManySpendings(payload);
     return context.json(result);
   },

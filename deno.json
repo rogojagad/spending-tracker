@@ -9,6 +9,8 @@
     "@hono/hono": "npm:hono@4.3.11",
     "@hono/logger": "npm:hono@4.3.11/logger",
     "@hono/cors": "npm:hono@4.3.11/cors",
+    "@hono/validation": "npm:hono@4.3.11/validation",
+    "@hono/http-exception": "npm:hono@4.3.11/http-exception",
     "@deno/collection": "https://deno.land/std@0.224.0/collections/mod.ts",
     "@hono/zod-validator": "npm:@hono/zod-validator@^0.7.6",
     "@std/csv": "jsr:@std/csv@^1.0.6",
