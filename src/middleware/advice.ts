@@ -16,8 +16,11 @@ export const onHandlerError: ErrorHandler = (err, c): Response => {
     return c.json(errorResponse, 400);
   }
 
-  console.log(err);
-  return c.json({ code: "Internal Server Error" }, 500);
+  const defaultResponse: ErrorResponse = {
+    code: ErrorCode.INTERNAL_SERVER_ERROR,
+    errors: { reason: err.message },
+  };
+  return c.json(defaultResponse, 500);
 };
 
 export const onZodValidationResult: Hook<any, any, any> = (
