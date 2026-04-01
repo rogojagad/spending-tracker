@@ -67,6 +67,7 @@ const snapshotLimitUsage = async (): Promise<void> => {
     const {
       categoryName: _categoryName,
       sourceName: _sourceName,
+      id: _id,
       ...limitSnapshot
     } = limitUsage;
 
