@@ -13,9 +13,9 @@
     "npm:hono@4.3.11": "4.3.11",
     "npm:jose@6.0.8": "6.0.8",
     "npm:ky@1.8.1": "1.8.1",
-    "npm:kysely-postgres-js@2.0.0": "2.0.0_kysely@0.27.4_postgres@3.4.4",
+    "npm:kysely-postgres-js@2.0.0": "2.0.0_kysely@0.27.4_postgres@3.4.7",
     "npm:kysely@0.27.4": "0.27.4",
-    "npm:postgres@3.4.4": "3.4.4"
+    "npm:postgres@3.4.7": "3.4.7"
   },
   "jsr": {
     "@std/bytes@1.0.6": {
@@ -198,7 +198,7 @@
     "ky@1.8.1": {
       "integrity": "sha512-7Bp3TpsE+L+TARSnnDpk3xg8Idi8RwSLdj6CMbNWoOARIrGrbuLGusV0dYwbZOm4bB3jHNxSw8Wk/ByDqJEnDw=="
     },
-    "kysely-postgres-js@2.0.0_kysely@0.27.4_postgres@3.4.4": {
+    "kysely-postgres-js@2.0.0_kysely@0.27.4_postgres@3.4.7": {
       "integrity": "sha512-R1tWx6/x3tSatWvsmbHJxpBZYhNNxcnMw52QzZaHKg7ZOWtHib4iZyEaw4gb2hNKVctWQ3jfMxZT/ZaEMK6kBQ==",
       "dependencies": [
         "kysely",
@@ -229,8 +229,8 @@
         "whatwg-url"
       ]
     },
-    "postgres@3.4.4": {
-      "integrity": "sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A=="
+    "postgres@3.4.7": {
+      "integrity": "sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw=="
     },
     "proxy-from-env@1.1.0": {
       "integrity": "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="
@@ -243,6 +243,7 @@
     },
     "uuid@9.0.1": {
       "integrity": "sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==",
+      "deprecated": true,
       "bin": true
     },
     "webidl-conversions@3.0.1": {
@@ -1306,7 +1307,7 @@
       "npm:ky@1.8.1",
       "npm:kysely-postgres-js@2.0.0",
       "npm:kysely@0.27.4",
-      "npm:postgres@3.4.4"
+      "npm:postgres@3.4.7"
     ]
   }
 }

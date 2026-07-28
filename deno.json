@@ -24,7 +24,7 @@
     "kysely": "npm:kysely@0.27.4",
     "kysely-postgres-js": "npm:kysely-postgres-js@2.0.0",
     "nessie": "https://deno.land/x/nessie@2.0.11/mod.ts",
-    "postgres": "npm:postgres@3.4.4",
+    "postgres": "npm:postgres@3.4.7",
     "spreadsheet": "npm:google-spreadsheet@4.1.4",
     "~/": "./"
   },
