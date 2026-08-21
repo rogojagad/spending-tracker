@@ -8,8 +8,7 @@ import sourceController from "./source/controller.ts";
 import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
 import jobController from "./job/controller.ts";
-import bot from "~/src/bot/client.ts";
-import { webhookCallback } from "grammy";
+import limitSnapshotController from "./limitSnapshot/controller.ts";
 import cron from "./cron.ts";
 import { onHandlerError } from "./middleware/advice.ts";
 
@@ -45,6 +44,7 @@ app.route("/sources", sourceController);
 app.route("/limits", limitController);
 app.route("/configs", configurationController);
 app.route("/jobs", jobController);
+app.route("/limit-snapshots", limitSnapshotController);
 
 /**
  * Telegram Bot

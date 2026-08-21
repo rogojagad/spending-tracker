@@ -1,5 +1,7 @@
+import { CATEGORY_TABLE } from "../category/repository.ts";
 import { ApplicationPeriod } from "../limit/repository.ts";
 import db from "../postgre.ts";
+import { SOURCE_TABLE } from "../source/repository.ts";
 
 export const SPENDING_LIMIT_SNAPSHOT_TABLE = "spendingLimitSnapshot";
 
@@ -16,6 +18,12 @@ export interface ILimitSnapshot {
   // Snapshot fields
   usedValue: number;
   usedPercentage: number;
+}
+
+export interface ILimitSnapshotWithCategoryNameAndSourceName
+  extends Omit<ILimitSnapshot, "categoryId" | "sourceId"> {
+  categoryName?: string | null;
+  sourceName?: string | null;
 }
 
 const createOne = async (
@@ -37,8 +45,31 @@ const createOne = async (
   return result;
 };
 
+const getAllWithCategoryNameAndSourceName = async (): Promise<
+  ILimitSnapshotWithCategoryNameAndSourceName[]
+> => {
+  const result = await db.selectFrom(SPENDING_LIMIT_SNAPSHOT_TABLE)
+    .leftJoin(CATEGORY_TABLE, "spendingLimitSnapshot.categoryId", "category.id")
+    .leftJoin(SOURCE_TABLE, "spendingLimitSnapshot.categoryId", "source.id")
+    .select([
+      "spendingLimitSnapshot.id as id",
+      "spendingLimitSnapshot.name as name",
+      "spendingLimitSnapshot.value as value",
+      "spendingLimitSnapshot.descriptionKeywords as descriptionKeywords",
+      "spendingLimitSnapshot.applicationPeriod as applicationPeriod",
+      "spendingLimitSnapshot.usedValue as usedValue",
+      "spendingLimitSnapshot.usedPercentage as usedPercentage",
+      "category.name as categoryName",
+      "source.name as sourceName",
+    ])
+    .execute();
+
+  return result;
+};
+
 const limitSnapshotRepository = {
   createOne,
+  getAllWithCategoryNameAndSourceName,
 };
 
 export default limitSnapshotRepository;
