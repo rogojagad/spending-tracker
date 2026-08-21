@@ -18,6 +18,8 @@ export interface ILimitSnapshot {
   // Snapshot fields
   usedValue: number;
   usedPercentage: number;
+
+  createdAt: Date;
 }
 
 export interface ILimitSnapshotWithCategoryNameAndSourceName
@@ -59,9 +61,11 @@ const getAllWithCategoryNameAndSourceName = async (): Promise<
       "spendingLimitSnapshot.applicationPeriod as applicationPeriod",
       "spendingLimitSnapshot.usedValue as usedValue",
       "spendingLimitSnapshot.usedPercentage as usedPercentage",
+      "spendingLimitSnapshot.createdAt as createdAt",
       "category.name as categoryName",
       "source.name as sourceName",
     ])
+    .orderBy("spendingLimitSnapshot.createdAt desc")
     .execute();
 
   return result;
