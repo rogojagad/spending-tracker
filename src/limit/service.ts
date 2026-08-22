@@ -7,8 +7,10 @@ import limitRepository, {
   ILimit,
   ILimitWithCategoryAndSourceName,
 } from "./repository.ts";
+import botClient from "~/src/core/bot/client.ts";
 
 import applicationDateCalculator from "./util/applicationDateCalculator.ts";
+import messageFormatter from "../core/bot/messageFormatter.ts";
 
 export interface ILimitCheckResult extends ILimit {
   usedValue: number;
@@ -179,8 +181,19 @@ const calculateLimitsUsage = async (limits: ILimit[]): Promise<
   });
 };
 
+const checkForLimitExceeded = async (spending: ISpending): Promise<void> => {
+  const limits = await getLimitsExceededBySpending(spending);
+
+  if (limits.length === 0) return;
+
+  await botClient.sendMessageToRecipient(
+    messageFormatter.formatLimitAlert(limits),
+  );
+};
+
 const limitService = {
   getLimitsExceededBySpending,
+  checkForLimitExceeded,
   calculateLimitsUsage,
   getAll,
   getAllDue,

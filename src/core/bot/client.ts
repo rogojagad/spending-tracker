@@ -2,12 +2,8 @@ import { Bot, Context, session } from "grammy";
 import {
   type Conversation,
   type ConversationFlavor,
-  ConversationFn,
   conversations,
-  createConversation,
 } from "grammy/conversations";
-import { addNewSpending } from "~/src/core/bot/conversations/addNewSpending.ts";
-import { generateDailyReport } from "~/src/core/bot/conversations/generateDailyReport.ts";
 
 export type MyContext = Context & ConversationFlavor;
 export type MyConversation = Conversation<Context>;
@@ -25,7 +21,6 @@ type BotClient = Bot<MyContext>;
 class TelegramBot {
   private bot: BotClient;
   private recipientId: string;
-  private conversationHandlerRegistrar = new ConversationHandlerRegistrar();
 
   constructor() {
     // init instance
@@ -37,9 +32,6 @@ class TelegramBot {
     // register middlewares
     botClient.use(session({ initial: () => ({}) }));
     botClient.use(conversations());
-
-    // register conversations handler
-    this.conversationHandlerRegistrar.register(botClient);
 
     // persists instance and other relevant values
     // this should be final step, all event handler registration should be done before this
@@ -72,34 +64,6 @@ class TelegramBot {
     console.info(
       `Success sending message | Message ID: ${messageInstance.message_id} | Text: ${message}`,
     );
-  }
-}
-
-class ConversationHandlerRegistrar {
-  register(clientInstance: BotClient): void {
-    this.registerAddNewSpendings(clientInstance);
-    this.getTodaySummary(clientInstance);
-    // add other conversation handler
-  }
-
-  private registerAddNewSpendings(clientInstance: BotClient) {
-    clientInstance.use(
-      createConversation(addNewSpending as ConversationFn<Context>),
-    );
-
-    clientInstance.hears(/^(\d+)\s+(.+)$/, async (ctx) => {
-      await ctx.conversation.enter("addNewSpending");
-    });
-  }
-
-  private getTodaySummary(clientInstance: BotClient) {
-    clientInstance.use(
-      createConversation(generateDailyReport as ConversationFn<Context>),
-    );
-
-    clientInstance.hears("Daily report", async (ctx) => {
-      await ctx.conversation.enter("generateDailyReport");
-    });
   }
 }
 

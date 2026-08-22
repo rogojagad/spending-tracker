@@ -12,6 +12,7 @@ import categoryService from "~/src/category/service.ts";
 import sourceService from "~/src/source/service.ts";
 import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
 import { ErrorCode, SpendingTrackerError } from "~/src/core/error/error.ts";
+import event, { EventType } from "../core/event/index.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -133,7 +134,18 @@ const createManySpendings = async (
   // using Promise.all is not optimal because it will initiate new N connections according to number of data
   // will be better if we use actual SQL create many
   const results = await Promise.all(
-    payload.map((spending) => spendingRepository.createOneSpending(spending)),
+    payload.map((spending) => {
+      return spendingRepository.createOneSpending(spending);
+    }),
+  );
+
+  await Promise.all(
+    results.map((result) => {
+      event.publish<ISpending>({
+        type: EventType.SPENDING_CREATED,
+        data: result,
+      });
+    }),
   );
 
   return results;

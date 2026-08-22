@@ -11,6 +11,8 @@ import jobController from "./job/controller.ts";
 import limitSnapshotController from "./limitSnapshot/controller.ts";
 import cron from "./core/cron.ts";
 import { onHandlerError } from "~/src/core/middleware/advice.ts";
+import event from "./core/event/index.ts";
+import { eventExecutorMap } from "./core/event/mapper.ts";
 
 /** HTTP Server */
 const app = new Hono();
@@ -69,3 +71,6 @@ Deno.serve({ port: 8080 }, app.fetch);
 
 /** Cron */
 cron.register();
+
+/** Event */
+event.registerListener(eventExecutorMap);
