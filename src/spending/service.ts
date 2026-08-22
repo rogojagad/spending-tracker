@@ -13,6 +13,7 @@ import sourceService from "~/src/source/service.ts";
 import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
 import { ErrorCode, SpendingTrackerError } from "~/src/core/error/error.ts";
 import event, { EventType } from "../core/event/index.ts";
+import limitService from "../limit/service.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -141,10 +142,13 @@ const createManySpendings = async (
 
   await Promise.all(
     results.map((result) => {
-      event.publish<ISpending>({
-        type: EventType.SPENDING_CREATED,
-        data: result,
-      });
+      // Deno KV Queue is not supported in the new Deno deployment platform (SMH) -- keeping it here for reference
+      // event.publish<ISpending>({
+      //   type: EventType.SPENDING_CREATED,
+      //   data: result,
+      // });
+
+      limitService.checkForLimitExceeded(result);
     }),
   );
 
