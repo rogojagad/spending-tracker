@@ -19,7 +19,7 @@ export interface ILimitSnapshot {
   usedValue: number;
   usedPercentage: number;
 
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface ILimitSnapshotWithCategoryNameAndSourceName

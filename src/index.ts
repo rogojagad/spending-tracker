@@ -1,6 +1,6 @@
 import { cors } from "@hono/cors";
 import { logger } from "@hono/logger";
-import { generateToken, validatePassword } from "./middleware/auth.ts";
+import { generateToken, validatePassword } from "./core/middleware/auth.ts";
 import { type Context, Hono } from "@hono/hono";
 import categoryController from "./category/controller.ts";
 import limitController from "./limit/controller.ts";
@@ -10,7 +10,7 @@ import configurationController from "./configuration/controller.ts";
 import jobController from "./job/controller.ts";
 import limitSnapshotController from "./limitSnapshot/controller.ts";
 import cron from "./cron.ts";
-import { onHandlerError } from "./middleware/advice.ts";
+import { onHandlerError } from "~/src/core/middleware/advice.ts";
 
 /** HTTP Server */
 const app = new Hono();

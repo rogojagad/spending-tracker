@@ -11,7 +11,7 @@ import { stringify } from "@std/csv";
 import categoryService from "~/src/category/service.ts";
 import sourceService from "~/src/source/service.ts";
 import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
-import { ErrorCode, SpendingTrackerError } from "~/src/error/error.ts";
+import { ErrorCode, SpendingTrackerError } from "~/src/core/error/error.ts";
 
 interface ISpendingAmountSummaryForMonth {
   month: Date;
@@ -132,11 +132,11 @@ const createManySpendings = async (
   // create and return
   // using Promise.all is not optimal because it will initiate new N connections according to number of data
   // will be better if we use actual SQL create many
-  const result = await Promise.all(
+  const results = await Promise.all(
     payload.map((spending) => spendingRepository.createOneSpending(spending)),
   );
 
-  return result;
+  return results;
 };
 
 const spendingService = {
