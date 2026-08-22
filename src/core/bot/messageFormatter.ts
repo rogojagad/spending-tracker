@@ -6,7 +6,7 @@ import {
 import {
   ILimitCheckResult,
   LIMIT_THRESHOLD_PERCENTAGE,
-} from "../limit/service.ts";
+} from "~/src/limit/service.ts";
 
 const formatCategorySpendingBreakdown = (
   totalSpendingPerCategoryName: ITotalSpendingAmountByCategoryName[],

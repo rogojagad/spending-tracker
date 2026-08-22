@@ -1,11 +1,11 @@
 import { InlineKeyboard } from "grammy";
-import { MyContext, MyConversation } from "~/src/bot/client.ts";
+import { MyContext, MyConversation } from "~/src/core/bot/client.ts";
 import categoryRepository, { ICategory } from "~/src/category/repository.ts";
 import spendingRepository from "~/src/spending/repository.ts";
 
-import "../../types/extensions/number.ts";
+import "~/src/core/types/extensions/number.ts";
 import sourceCategory, { ISource } from "~/src/source/repository.ts";
-import limitService from "../../limit/service.ts";
+import limitService from "~/src/limit/service.ts";
 import messageFormatter from "../messageFormatter.ts";
 
 /**

@@ -6,8 +6,8 @@ import {
   conversations,
   createConversation,
 } from "grammy/conversations";
-import { addNewSpending } from "~/src/bot/conversations/addNewSpending.ts";
-import { generateDailyReport } from "~/src/bot/conversations/generateDailyReport.ts";
+import { addNewSpending } from "~/src/core/bot/conversations/addNewSpending.ts";
+import { generateDailyReport } from "~/src/core/bot/conversations/generateDailyReport.ts";
 
 export type MyContext = Context & ConversationFlavor;
 export type MyConversation = Conversation<Context>;
