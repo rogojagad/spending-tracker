@@ -1,5 +1,5 @@
 import { sql } from "kysely";
-import db from "../postgre.ts";
+import db from "../core/postgre.ts";
 
 export const SPENDING_LIMIT_TABLE = "spendingLimit";
 

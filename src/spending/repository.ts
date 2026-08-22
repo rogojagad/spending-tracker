@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import db from "~/src/postgre.ts";
+import db from "../core/postgre.ts";
 import { sql } from "kysely";
 import { IGetManySpendingsFilterQuery } from "~/src/spending/interface.ts";
 

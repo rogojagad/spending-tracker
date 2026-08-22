@@ -5,9 +5,9 @@ import { ISpending } from "~/src/spending/repository.ts";
 import { ICategory } from "~/src/category/repository.ts";
 import { CamelCasePlugin } from "kysely";
 import { ISource } from "~/src/source/repository.ts";
-import { ILimit } from "./limit/repository.ts";
-import { IPayday } from "./configuration/payday/repository.ts";
-import { ILimitSnapshot } from "./limitSnapshot/repository.ts";
+import { ILimit } from "../limit/repository.ts";
+import { IPayday } from "../configuration/payday/repository.ts";
+import { ILimitSnapshot } from "../limitSnapshot/repository.ts";
 
 interface IDatabase {
   category: ICategory;

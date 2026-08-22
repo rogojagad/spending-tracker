@@ -1,6 +1,6 @@
 import { CATEGORY_TABLE } from "../category/repository.ts";
 import { ApplicationPeriod } from "../limit/repository.ts";
-import db from "../postgre.ts";
+import db from "../core/postgre.ts";
 import { SOURCE_TABLE } from "../source/repository.ts";
 
 export const SPENDING_LIMIT_SNAPSHOT_TABLE = "spendingLimitSnapshot";

@@ -1,4 +1,4 @@
-import db from "~/src/postgre.ts";
+import db from "../core/postgre.ts";
 
 export const SOURCE_TABLE = "source";
 

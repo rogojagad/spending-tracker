@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import db from "../../postgre.ts";
+import db from "../../core/postgre.ts";
 import { sql } from "kysely";
 
 export interface IPayday {
