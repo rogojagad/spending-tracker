@@ -13,6 +13,7 @@ import cron from "./core/cron.ts";
 import { onHandlerError } from "~/src/core/middleware/advice.ts";
 import event from "./core/event/index.ts";
 import { eventExecutorMap } from "./core/event/mapper.ts";
+import "~/src/core/types/extensions/number.ts";
 
 /** HTTP Server */
 const app = new Hono();
