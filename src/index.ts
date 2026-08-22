@@ -9,7 +9,7 @@ import spendingController from "./spending/controller.ts";
 import configurationController from "./configuration/controller.ts";
 import jobController from "./job/controller.ts";
 import limitSnapshotController from "./limitSnapshot/controller.ts";
-import cron from "./cron.ts";
+import cron from "./core/cron.ts";
 import { onHandlerError } from "~/src/core/middleware/advice.ts";
 
 /** HTTP Server */
