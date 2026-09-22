@@ -12,7 +12,6 @@ import categoryService from "~/src/category/service.ts";
 import sourceService from "~/src/source/service.ts";
 import { BulkCreateSpendingValidator } from "~/src/spending/bulkCreate/validator.ts";
 import { ErrorCode, SpendingTrackerError } from "~/src/core/error/error.ts";
-import event, { EventType } from "../core/event/index.ts";
 import limitService from "../limit/service.ts";
 
 interface ISpendingAmountSummaryForMonth {

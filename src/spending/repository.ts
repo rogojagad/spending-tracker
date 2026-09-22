@@ -176,13 +176,9 @@ const getMany = async (
     and
       (spending.source_id = COALESCE(${filter.source}, spending.source_id))
     and
-      spending.created_at >= ${
-    filter.createdAt.fromInclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp
+      spending.created_at >= ${filter.createdAt.fromInclusive.toISOString()}::timestamp
     and
-      spending.created_at < ${
-    filter.createdAt.toExclusive.format("YYYY-MM-DD HH:mm:ss")
-  }::timestamp
+      spending.created_at < ${filter.createdAt.toExclusive.toISOString()}::timestamp
     and case
       when ${descriptionSearchQuery} = '' THEN true
       else to_tsvector('simple', spending.description) @@ to_tsquery('simple', ${descriptionSearchQuery})
